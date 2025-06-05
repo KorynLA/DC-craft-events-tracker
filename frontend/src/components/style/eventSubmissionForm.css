@@ -1,0 +1,112 @@
+/* Event form styles to match new color scheme */
+.event-form-container {
+  padding: 2rem; 
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  background-color: #f2f4f7;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.form-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #2d3748; /* Dark blue-gray */
+}
+
+/* Form section styles */
+.form-section {
+  margin-bottom: 20px;
+  width: 98%;
+}
+
+.form-label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #3d4b6a; /* Medium blue-gray */
+}
+
+.required-indicator {
+  color: #e53e3e;
+  margin-left: 3px;
+}
+
+/* Form input styles */
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #cbd5e0; /* Light blue-gray border */
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #e6e9f0; /* Light blue-gray input background */
+  color: #4a5568; /* Medium blue-gray for text */
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  border-color: #2563eb; /* Bright blue border on focus */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Subtle blue glow */
+}
+.button-container {
+  text-align:center;
+}
+
+/* Form button styles */
+.submit-button {
+  background-color: #2563eb; /* Bright blue button */
+  color: white;
+  font-weight: 600;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 50%;
+}
+
+.submit-button:hover {
+  background-color: #1d4ed8; /* Slightly darker blue on hover */
+}
+
+.submit-button:disabled {
+  background-color: #a0aec0; /* Muted blue-gray when disabled */
+  cursor: not-allowed;
+}
+
+/* Form error styles */
+.form-error {
+  color: #e53e3e;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Date picker custom styling */
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  padding: 8px 12px;
+  border: 1px solid #cbd5e0; /* Light blue-gray border */
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #e6e9f0; /* Light blue-gray input background */
+  color: #4a5568; /* Medium blue-gray for text */
+}
+
+.react-datepicker__input-container input:focus {
+  border-color: #2563eb; /* Bright blue border on focus */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Subtle blue glow */
+}
