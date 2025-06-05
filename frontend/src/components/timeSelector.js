@@ -51,9 +51,11 @@ export default function TimeSelector({ selectedTime, onTimeChange }) {
    * Toggle between AM and PM format
    * Note: Currently unused in the component
    */
+   /**
   const toggleTimeFormat = () => {
     setTimeFormat(timeFormat === 'AM' ? 'PM' : 'AM');
   };
+  */
   
   // Display selected time or placeholder text
   const displayTime = selectedTime || 'Select Time';

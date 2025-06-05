@@ -90,8 +90,8 @@ export default function CalendarPage() {
   useEffect(() => {
     const fetchEvents = () => {
       // TODO: Replace with actual API integration
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
+      //const year = currentDate.getFullYear();
+      //const month = currentDate.getMonth();
       
       const mockEvents = {};
       
