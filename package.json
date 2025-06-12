@@ -39,7 +39,8 @@
     ]
   },
   "devDependencies": {
-    "jest": "^27.5.1",
+    "@types/react-dom": "^19.1.6",
+    "identity-obj-proxy": "^3.0.0",
     "react-test-renderer": "^19.1.0"
   }
 }
