@@ -14,41 +14,39 @@ export default function AboutPage() {
   return (
     <div className="about-container">
       {/* Main page title */}
-      <h1 className="about-title">About Our Event Calendar</h1>
+      <h1 className="about-title">About Our Craft Event Calendar</h1>
       
       {/* Welcome section - explains the application's purpose */}
       <div className="about-section">
         <h2 className="about-section-title">Welcome to Our Community Calendar</h2>
         <p className="about-text">
-          This calendar application serves as a central hub for all community events and activities. 
-          Browse upcoming events, find activities that interest you, and submit your own events 
-          to share with the community.
+          This calendar application serves as a central hub for all craft related community events and activities. 
+          Browse upcoming events  and submit your own events to share with the community.
         </p>
       </div>
       
-      {/* Usage instructions section - explains navigation and features */}
-      <div className="about-section">
-        <h2 className="about-section-title">How to Use This Application</h2>
-        <p className="about-text">
+      {/* Usage instructions section - explains navigation */}
+      <div className="usage-section">
+        <h2 className="usage-section-title">How to Use This Application</h2>
+        <p className="usage-text">
           Navigate through the tabs above to access different features:
         </p>
         {/* Feature list explaining each navigation tab */}
-        <ul className="about-list">
+        <ul className="usage-list">
           <li><strong>About:</strong> Learn about the purpose and features of this application</li>
-          <li><strong>Calendar:</strong> View all upcoming events in a calendar format</li>
-          <li><strong>Submit Event:</strong> Add your own event to the community calendar</li>
+          <li><strong>Calendar:</strong> View all upcoming craft events in a calendar format</li>
+          <li><strong>Submit Event:</strong> Add your own craft event to the community calendar</li>
         </ul>
       </div>
       
-      {/* Contact information section - provides support details */}
-      <div className="about-section">
-        <h2 className="about-section-title">Contact Information</h2>
-        <p className="about-text">
+      {/* Contact information section */}
+      <div className="contact-section">
+        <h2 className="contact-section-title">Contact Information</h2>
+        <p className="contact-text">
           If you have any questions or need assistance with the calendar, please contact us at:
           <br />
           Email: support@communitycalendar.example.com
           <br />
-          Phone: (555) 123-4567
         </p>
       </div>
     </div>
