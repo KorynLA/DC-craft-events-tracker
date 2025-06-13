@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router';
 import NavigationTabs from './components/navigationTabs';
 import CalendarPage from './components/calendarPage';
 import EventSubmissionForm from './components/eventSubmissionForm';
