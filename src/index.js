@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 /**
  * Application Entry Point
@@ -16,7 +15,6 @@ import reportWebVitals from './reportWebVitals';
  * @requires react-dom/client - React DOM rendering (React 18+)
  * @requires ./index.css - Global application styles
  * @requires ./App - Main application component
- * @requires ./reportWebVitals - Performance monitoring utility
  */
 
 // Create the root element using React 18's createRoot API
@@ -28,17 +26,3 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <App />
 );
-
-/**
- * Web Vitals Performance Monitoring
- * 
- * Measures and reports Core Web Vitals metrics to help monitor app performance.
- * Currently called without parameters (no logging).
- * 
- * To enable performance logging:
- * - reportWebVitals(console.log) - Log metrics to console
- * - reportWebVitals(sendToAnalytics) - Send to analytics service
- * 
- * Learn more: https://bit.ly/CRA-vitals
- */
-reportWebVitals();
