@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
 
 /**
  * Application Entry Point
@@ -16,7 +15,6 @@ import reportWebVitals from './reportWebVitals';
  * @requires react-dom/client - React DOM rendering (React 18+)
  * @requires ./index.css - Global application styles
  * @requires ./App - Main application component
- * @requires ./reportWebVitals - Performance monitoring utility
  */
 
 // Create the root element using React 18's createRoot API
