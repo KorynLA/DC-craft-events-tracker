@@ -28,17 +28,3 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <App />
 );
-
-/**
- * Web Vitals Performance Monitoring
- * 
- * Measures and reports Core Web Vitals metrics to help monitor app performance.
- * Currently called without parameters (no logging).
- * 
- * To enable performance logging:
- * - reportWebVitals(console.log) - Log metrics to console
- * - reportWebVitals(sendToAnalytics) - Send to analytics service
- * 
- * Learn more: https://bit.ly/CRA-vitals
- */
-reportWebVitals();
