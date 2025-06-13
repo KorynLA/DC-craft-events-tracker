@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import React from "react";
-import AboutPage from '../AboutPage'; // Make sure this path is correct
+import AboutPage from '../aboutPage';
 
 describe('AboutPage Component', () => {
   
