@@ -89,15 +89,12 @@ export default function CalendarPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        
-        if(!process.env.REACT_APP_API_URL) {
+        var url = '/.netlify/functions/calendar'
+        if(!url) {
           throw new Error(`No URL found!`);
-        } else {
-          var url = process.env.REACT_APP_API_URL;
-        }
+        } 
 
         const response = await fetch(url)
-        
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
