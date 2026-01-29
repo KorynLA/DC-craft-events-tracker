@@ -89,7 +89,7 @@ export default function CalendarPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await fetch(process.env.CALENDAR_URL)
+        const response = await fetch(process.env.REACT_APP_CALENDAR_URL)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
