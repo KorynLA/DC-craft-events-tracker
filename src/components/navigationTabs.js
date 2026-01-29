@@ -54,7 +54,6 @@ export default function NavigationTabs() {
     // Update active tab state for immediate visual feedback
     setActiveTab(tab);
     
-    // Navigate to the corresponding route
     switch (tab) {
       case 'about':
         navigate('/about');

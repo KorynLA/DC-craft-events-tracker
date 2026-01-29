@@ -13,10 +13,9 @@ import './style/calendarPage.css';
  *                        month grid, and event displays
  */
 export default function CalendarPage() {
-  // State for tracking the currently displayed month/year
   const [currentDate, setCurrentDate] = useState(new Date());
-  // State for storing events data, keyed by day number
   const [events, setEvents] = useState({});
+  const [hoveredEvent, setHoveredEvent] = useState(null);
 
   /**
    * Formats a date object into a readable month and year string
@@ -88,34 +87,54 @@ export default function CalendarPage() {
    * actual API calls in the future.
    */
   useEffect(() => {
-    const fetchEvents = () => {
-      // TODO: Replace with actual API integration
-      //const year = currentDate.getFullYear();
-      //const month = currentDate.getMonth();
-      
-      const mockEvents = {};
-      
-      // Generate sample events for demonstration
-      for (let i = 1; i <= 28; i++) {
-        // Add events to select days (every 3rd or 7th day)
-        if (i % 3 === 0 || i % 7 === 0) {
-          const eventCount = Math.floor(Math.random() * 3) + 1;
-          mockEvents[i] = [];
-          
-          // Create random event types for each day
-          for (let j = 0; j < eventCount; j++) {
-            const eventTypes = ['Meeting', 'Call', 'Deadline', 'Appointment', 'Reminder'];
-            const eventType = eventTypes[Math.floor(Math.random() * eventTypes.length)];
-            mockEvents[i].push(`${eventType} ${j+1}`);
-          }
+    const fetchEvents = async () => {
+      try {
+        
+        if(!process.env.REACT_APP_API_URL) {
+          throw new Error(`No URL found!`);
+        } else {
+          var url = process.env.REACT_APP_API_URL;
         }
+
+        const response = await fetch(url)
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const body = JSON.parse(data["body"]);
+
+        const processedEvents = {};
+        
+        if (body.found_events && Array.isArray(body.found_events)) {
+          console.log('Inside if block - about to loop');
+          
+          body.found_events.forEach((event, index) => {
+            const eventDate = new Date(event.date);
+            
+            const day = eventDate.getDate();
+            event.date = day;
+            
+            if (!processedEvents[day]) {
+              processedEvents[day] = [];
+            }
+
+            processedEvents[day].push(event);
+            
+          });
+        } else {
+          console.log('Condition failed - not processing events');
+        }
+        setEvents(processedEvents);
+        
+      } catch(error) {
+        console.log("Error:", error);
       }
-      
-      setEvents(mockEvents);
     };
     
     fetchEvents();
-  }, [currentDate]); // Re-fetch events when month changes
+  }, [currentDate]);
 
   const calendarDays = generateCalendarDays();
   
@@ -173,8 +192,74 @@ export default function CalendarPage() {
                     <div 
                       key={eventIndex} 
                       className="event-item"
+                      onMouseEnter={() => setHoveredEvent({ day, eventIndex, event })}
+                      onMouseLeave={() => setHoveredEvent(null)}
                     >
-                      {event}
+                      <h3>{event.name}</h3>
+                      
+                      {/* Hover popup */}
+                      {hoveredEvent && 
+                       hoveredEvent.day === day && 
+                       hoveredEvent.eventIndex === eventIndex && (
+                        <div className="event-popup">
+                          
+                          {event.business && (
+                            <p className="popup-business">
+                              <strong>Organizer:</strong> {event.business}
+                            </p>
+                          )}
+                          
+                          {event.craft && (
+                            <p className="popup-craft">
+                              <strong>Craft:</strong> {event.craft}
+                            </p>
+                          )}
+                          
+                          {event.description && (
+                            <p className="popup-description">
+                              <strong>Description:</strong> {event.description}
+                            </p>
+                          )}
+                          
+                          {event.price !== null && event.price !== undefined && (
+                            <p className="popup-price">
+                              <strong>Price:</strong> ${event.price.toFixed(2)}
+                            </p>
+                          )}
+                          
+                          {event.location_name && (
+                            <p className="popup-location">
+                              <strong>Location:</strong> {event.location_name}
+                            </p>
+                          )}
+                          
+                          {event.address && event.address !== 'NAMER' && (
+                            <p className="popup-address">
+                              {event.address}
+                              {event.city && `, ${event.city}`}
+                              {event.state && `, ${event.state}`}
+                              {event.zip && ` ${event.zip}`}
+                            </p>
+                          )}
+                          
+                          {event.kids && (
+                            <p className="popup-kids">
+                              <strong>Kid-Friendly</strong> Yes
+                            </p>
+                          )}
+                          
+                          {event.link && (
+                            <a 
+                              href={event.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="popup-link"
+                            >
+                              View Event Details
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
