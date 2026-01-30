@@ -131,7 +131,6 @@ export default function CalendarPage() {
         if (body.found_events && Array.isArray(body.found_events)) {
           
           body.found_events.forEach((event, index) => {
-            const eventDate = new Date(event.date);
             const dateKey = event.date; 
             if (!processedEvents[dateKey]) {
               processedEvents[dateKey] = [];
