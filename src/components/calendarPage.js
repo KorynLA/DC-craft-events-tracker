@@ -154,7 +154,7 @@ export default function CalendarPage() {
 
   useEffect(() => {
     filterEventsForCurrentMonth();
-  }, [currentDate, allEvents]); 
+  }, [currentDate, allEvents, filterEventsForCurrentMonth]); 
 
 
   const calendarDays = generateCalendarDays();
