@@ -89,7 +89,6 @@ export default function CalendarPage() {
     // Iterate through all date keys in allEvents object
     Object.keys(allEvents).forEach((dateKey) => {
       const eventsArray = allEvents[dateKey];
-      console.log(eventsArray)
       eventsArray.forEach((event) => {
         const [year, month, day] = event.date.split('-').map(Number);
         const eventDate = new Date(year, month - 1, day);
@@ -107,8 +106,7 @@ export default function CalendarPage() {
         }
       });
     });
-        console.log('Filtered events for current month:', processedEvents);
-    console.log('Number of days with events:', Object.keys(processedEvents).length);
+
     setFilteredEvents(processedEvents);
   };
 
