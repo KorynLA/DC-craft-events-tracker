@@ -14,7 +14,8 @@ import './style/calendarPage.css';
  */
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [events, setEvents] = useState({});
+  const [allEvents, setAllEvents] = useState({});
+  const [filteredEvents, setFilteredEvents] = useState({}); 
   const [hoveredEvent, setHoveredEvent] = useState(null);
 
   /**
@@ -41,10 +42,12 @@ export default function CalendarPage() {
    * Navigates to the next month and updates the calendar display
    */
   const goToNextMonth = () => {
-    setCurrentDate(prevDate => {
-      const newDate = new Date(prevDate);
-      newDate.setMonth(newDate.getMonth() + 1);
-      return newDate;
+  setCurrentDate(prevDate => {
+    return new Date(
+      prevDate.getFullYear(),
+      prevDate.getMonth() + 1,
+      1
+      );
     });
   };
 
@@ -81,6 +84,34 @@ export default function CalendarPage() {
     return days;
   };
 
+  const filterEventsForCurrentMonth = () => {
+    const processedEvents = {};
+    // Iterate through all date keys in allEvents object
+    Object.keys(allEvents).forEach((dateKey) => {
+      const eventsArray = allEvents[dateKey];
+      console.log(eventsArray)
+      eventsArray.forEach((event) => {
+        const [year, month, day] = event.date.split('-').map(Number);
+        const eventDate = new Date(year, month - 1, day);
+        // Check if event belongs to the currently displayed month and year
+        if (eventDate.getMonth() === currentDate.getMonth() && 
+            eventDate.getFullYear() === currentDate.getFullYear()) {
+          
+          const day = eventDate.getDate();
+          
+          if (!processedEvents[day]) {
+            processedEvents[day] = [];
+          }
+          
+          processedEvents[day].push(event);
+        }
+      });
+    });
+        console.log('Filtered events for current month:', processedEvents);
+    console.log('Number of days with events:', Object.keys(processedEvents).length);
+    setFilteredEvents(processedEvents);
+  };
+
   /**
    * Effect hook to fetch and generate events for the current month.
    * Currently uses mock data but designed to be easily replaced with
@@ -100,25 +131,21 @@ export default function CalendarPage() {
         const processedEvents = {};
         
         if (body.found_events && Array.isArray(body.found_events)) {
-          console.log('Inside if block - about to loop');
           
           body.found_events.forEach((event, index) => {
             const eventDate = new Date(event.date);
-            
-            const day = eventDate.getDate();
-            event.date = day;
-            
-            if (!processedEvents[day]) {
-              processedEvents[day] = [];
+            const dateKey = event.date; 
+            if (!processedEvents[dateKey]) {
+              processedEvents[dateKey] = [];
             }
 
-            processedEvents[day].push(event);
+            processedEvents[dateKey].push(event);
             
           });
         } else {
           console.log('Condition failed - not processing events');
         }
-        setEvents(processedEvents);
+        setAllEvents(processedEvents);
         
       } catch(error) {
         console.log("Error:", error);
@@ -126,7 +153,12 @@ export default function CalendarPage() {
     };
     
     fetchEvents();
-  }, [currentDate]);
+  }, []);
+
+  useEffect(() => {
+    filterEventsForCurrentMonth();
+  }, [currentDate, allEvents]); 
+
 
   const calendarDays = generateCalendarDays();
   
@@ -180,7 +212,7 @@ export default function CalendarPage() {
                 </div>
                 {/* Events list for this day */}
                 <div className="events-container">
-                  {events[day] && events[day].map((event, eventIndex) => (
+                  {filteredEvents[day] && filteredEvents[day].map((event, eventIndex) => (
                     <div 
                       key={eventIndex} 
                       className="event-item"
