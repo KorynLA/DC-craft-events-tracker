@@ -84,32 +84,6 @@ export default function CalendarPage() {
     return days;
   };
 
-  const filterEventsForCurrentMonth = () => {
-    const processedEvents = {};
-    // Iterate through all date keys in allEvents object
-    Object.keys(allEvents).forEach((dateKey) => {
-      const eventsArray = allEvents[dateKey];
-      eventsArray.forEach((event) => {
-        const [year, month, day] = event.date.split('-').map(Number);
-        const eventDate = new Date(year, month - 1, day);
-        // Check if event belongs to the currently displayed month and year
-        if (eventDate.getMonth() === currentDate.getMonth() && 
-            eventDate.getFullYear() === currentDate.getFullYear()) {
-          
-          const day = eventDate.getDate();
-          
-          if (!processedEvents[day]) {
-            processedEvents[day] = [];
-          }
-          
-          processedEvents[day].push(event);
-        }
-      });
-    });
-
-    setFilteredEvents(processedEvents);
-  };
-
   /**
    * Effect hook to fetch and generate events for the current month.
    * Currently uses mock data but designed to be easily replaced with
@@ -152,9 +126,31 @@ export default function CalendarPage() {
     fetchEvents();
   }, []);
 
-  useEffect(() => {
-    filterEventsForCurrentMonth();
-  }, [currentDate, allEvents, filterEventsForCurrentMonth]); 
+useEffect(() => {
+  const processedEvents = {};
+
+  Object.keys(allEvents).forEach((dateKey) => {
+    const eventsArray = allEvents[dateKey];
+
+    eventsArray.forEach((event) => {
+      const [year, month, day] = event.date.split('-').map(Number);
+      const eventDate = new Date(year, month - 1, day);
+
+      if (
+        eventDate.getMonth() === currentDate.getMonth() &&
+        eventDate.getFullYear() === currentDate.getFullYear()
+      ) {
+        const dayOfMonth = eventDate.getDate();
+        if (!processedEvents[dayOfMonth]) {
+          processedEvents[dayOfMonth] = [];
+        }
+        processedEvents[dayOfMonth].push(event);
+      }
+    });
+  });
+
+  setFilteredEvents(processedEvents);
+}, [currentDate, allEvents]);
 
 
   const calendarDays = generateCalendarDays();
