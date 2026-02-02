@@ -182,16 +182,13 @@ useEffect(() => {
         </div>
       </header>
       
-      {/* Main calendar grid layout */}
       <div className="calendar-grid">
-        {/* Weekday column headers */}
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
           <div key={index} className="day-header">
             {day}
           </div>
         ))}
         
-        {/* Calendar day cells with events */}
         {calendarDays.map((day, index) => (
           <div 
             key={index} 
@@ -213,15 +210,13 @@ useEffect(() => {
                       onMouseLeave={() => setHoveredEvent(null)}
                     >
                       <h3>{event.name}</h3>
-                      
-                      {/* Hover popup */}
                       {hoveredEvent && 
                        hoveredEvent.day === day && 
                        hoveredEvent.eventIndex === eventIndex && (
                         <div className="event-popup">
                           {event.time !== null && event.time !== undefined && (
-                            <h3 className="popup-price">
-                              <strong>time:</strong> ${event.time}
+                            <h3 className="popup-time">
+                              <strong>Time:</strong> {event.time.slice(0, 5)}
                             </h3>
                           )}
                           
