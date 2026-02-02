@@ -23,7 +23,7 @@ describe('AboutPage Component', () => {
   describe('Main Title Section', () => {
     it('renders the main page title as h1', () => {
       render(<AboutPage />);
-      const title = screen.getByRole('heading', { level: 1, name: /About Our Craft Event Calendar/ });
+      const title = screen.getByRole('heading', { level: 1, name: /About The Craft Event Calendar/ });
       expect(title).toBeInTheDocument();
       expect(title).toHaveClass('about-title');
     });
@@ -32,7 +32,7 @@ describe('AboutPage Component', () => {
   describe('Welcome Section', () => {
     it('renders welcome section title as h2', () => {
       render(<AboutPage />);
-      const welcomeTitle = screen.getByRole('heading', { level: 2, name: /Welcome to Our Community Calendar/ });
+      const welcomeTitle = screen.getByRole('heading', { level: 2, name: /Welcome to The Community Calendar/ });
       expect(welcomeTitle).toBeInTheDocument();
       expect(welcomeTitle).toHaveClass('about-section-title');
     });
@@ -155,8 +155,8 @@ describe('AboutPage Component', () => {
 
     it('provides descriptive heading text', () => {
       render(<AboutPage />);
-      expect(screen.getByRole('heading', { name: /About Our Craft Event Calendar/ })).toBeInTheDocument();
-      expect(screen.getByRole('heading', { name: /Welcome to Our Community Calendar/ })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /About The Craft Event Calendar/ })).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: /Welcome to The Community Calendar/ })).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /How to Use This Application/ })).toBeInTheDocument();
       expect(screen.getByRole('heading', { name: /Contact Information/ })).toBeInTheDocument();
     });
