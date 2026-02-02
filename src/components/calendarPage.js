@@ -219,6 +219,11 @@ useEffect(() => {
                        hoveredEvent.day === day && 
                        hoveredEvent.eventIndex === eventIndex && (
                         <div className="event-popup">
+                          {event.time !== null && event.time !== undefined && (
+                            <h3 className="popup-price">
+                              <strong>time:</strong> ${event.time}
+                            </h3>
+                          )}
                           
                           {event.business && (
                             <p className="popup-business">
@@ -252,8 +257,7 @@ useEffect(() => {
                           
                           {event.address && event.address !== 'NAMER' && (
                             <p className="popup-address">
-                              {event.address}
-                              {event.city && `, ${event.city}`}
+                              {event.city && ` ${event.city}`}
                               {event.state && `, ${event.state}`}
                               {event.zip && ` ${event.zip}`}
                             </p>

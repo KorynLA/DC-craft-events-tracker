@@ -95,7 +95,7 @@ export default function NavigationTabs() {
           Calendar
         </div>
         
-        {/* Submit Event Tab */}
+        {/* Submit Event Tab
         <div 
           className={`nav-tab ${activeTab === 'submit-event' ? 'active' : ''}`}
           onClick={() => handleTabClick('submit-event')}
@@ -105,6 +105,7 @@ export default function NavigationTabs() {
         >
           Submit Event
         </div>
+         */}
       </div>
     </div>
   );
