@@ -84,7 +84,6 @@ export default function NavigationTabs() {
           About
         </div>
         
-        {/* Calendar Tab */}
         <div 
           className={`nav-tab ${activeTab === 'calendar' ? 'active' : ''}`}
           onClick={() => handleTabClick('calendar')}
@@ -95,7 +94,6 @@ export default function NavigationTabs() {
           Calendar
         </div>
         
-        {/* Submit Event Tab
         <div 
           className={`nav-tab ${activeTab === 'submit-event' ? 'active' : ''}`}
           onClick={() => handleTabClick('submit-event')}
@@ -105,7 +103,6 @@ export default function NavigationTabs() {
         >
           Submit Event
         </div>
-         */}
       </div>
     </div>
   );
