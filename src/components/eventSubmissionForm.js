@@ -39,10 +39,10 @@ export default function EventSubmissionForm() {
     description: '',
     link: '',
     kids: null,
-    location_name: '',
+    location: '',
     date: '',
     time: '',
-    business: '',
+    organization: '',
     email: ''
   });
   
@@ -53,10 +53,10 @@ export default function EventSubmissionForm() {
     description: '',
     link: '',
     kids: '',
-    location_name: '',
+    location: '',
     date: '',
     time: '',
-    business: '',
+    organization: '',
     email: ''
   });
 
@@ -82,13 +82,42 @@ export default function EventSubmissionForm() {
   const sanitizeInput = (input) => {
     if (typeof input !== 'string') return input;
     return input
-      .replace(/</g, '&lt;')      // Escape less-than symbols
-      .replace(/>/g, '&gt;')      // Escape greater-than symbols
-      .replace(/"/g, '&quot;')    // Escape double quotes
-      .replace(/'/g, '&#039;')    // Escape single quotes
-      .trim();                    // Remove leading/trailing whitespace
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+      .trim();
   };
 
+  const sanitizeTime = (time) => {
+    try {
+      const [timeSection, modifier] = time.split(' ');
+      let [hours, minutes] = timeSection.split(':').map(Number);
+
+      if (modifier === 'PM' && hours !== 12) {
+        hours += 12;
+      }
+
+      if (modifier === 'AM' && hours === 12) {
+        hours = 0;
+      }
+      return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    } catch(Exception) {
+      return null
+    }
+  }
+
+  const sanitizeDate = (date) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+    return date;
+  }
+
+  const sanitizeBoolean = (input) => {
+    if (typeof input == "boolean") {
+      return input;
+    } 
+    return null;
+  }
   /**
    * Validates email format using regex pattern
    * 
@@ -118,7 +147,7 @@ export default function EventSubmissionForm() {
   /**
    * Validates all form fields according to business rules and requirements.
    * 
-   * Required fields: name, email, business, location_name, date, time, link
+   * Required fields: name, email, organization, location, date, time, link
    * Optional fields: price, description, kids
    * 
    * @param {Object} data - The form data object to validate
@@ -131,10 +160,10 @@ export default function EventSubmissionForm() {
       description: '',
       link: '',
       kids: '',
-      location_name: '',
+      location: '',
       date: '',
       time: '',
-      business: '',
+      organization: '',
       email: ''
     };
 
@@ -154,18 +183,18 @@ export default function EventSubmissionForm() {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    // Validate business field (REQUIRED)
-    if (!data.business.trim()) {
-      newErrors.business = 'Business name is required';
-    } else if (data.business.length > 200) {
-      newErrors.business = 'Business name must be less than 200 characters';
+    // Validate organization field (REQUIRED)
+    if (!data.organization.trim()) {
+      newErrors.organization = 'Business name is required';
+    } else if (data.organization.length > 200) {
+      newErrors.organization = 'Business name must be less than 200 characters';
     }
 
     // Validate location name field (REQUIRED)
-    if (!data.location_name.trim()) {
-      newErrors.location_name = 'Location name is required';
-    } else if (data.location_name.length > 200) {
-      newErrors.location_name = 'Location name must be less than 200 characters';
+    if (!data.location.trim()) {
+      newErrors.location = 'Location name is required';
+    } else if (data.location.length > 200) {
+      newErrors.location = 'Location name must be less than 200 characters';
     }
 
     // Validate link field (REQUIRED)
@@ -199,8 +228,6 @@ export default function EventSubmissionForm() {
     if (data.description && data.description.length > 500) {
       newErrors.description = 'Description must be less than 500 characters';
     }
-
-    // Kids field is optional - no validation needed
     
     return newErrors;
   };
@@ -317,14 +344,14 @@ export default function EventSubmissionForm() {
       price: parseFloat(formData.price),
       description: sanitizeInput(formData.description),
       link: sanitizeInput(formData.link),
-      kids: formData.kids,
-      location_name: sanitizeInput(formData.location_name),
+      kids: sanitizeBoolean(formData.kids),
+      location: sanitizeInput(formData.location),
       date: formData.date,
-      time: formData.time,
-      business: sanitizeInput(formData.business),
+      time: sanitizeTime(formData.time),
+      organization: sanitizeInput(formData.organization),
       email: sanitizeInput(formData.email)
     };
-    
+
     // Run validation on sanitized data
     const newErrors = validateForm({
       ...sanitizedData,
@@ -338,10 +365,10 @@ export default function EventSubmissionForm() {
     if (isValid) {
       setIsSubmitting(true);
       setApiError('');
-      
+      console.log(sanitizedData);
       try {
         // Send POST request to backend API
-        const response = await fetch('http://localhost/api/events', {
+        const response = await fetch(process.env.REACT_APP_CALENDAR_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -368,10 +395,10 @@ export default function EventSubmissionForm() {
           description: '',
           link: '',
           kids: null,
-          location_name: '',
+          location: '',
           date: '',
           time: '',
-          business: '',
+          organization: '',
           email: ''
         });
         
@@ -382,7 +409,7 @@ export default function EventSubmissionForm() {
         
       } catch (error) {
         console.error('Error submitting form:', error);
-        setApiError(error.message || 'Failed to submit event. Please try again.');
+        setApiError('Failed to submit event. Please try again.');
       } finally {
         setIsSubmitting(false);
       }
@@ -462,57 +489,57 @@ export default function EventSubmissionForm() {
           </p>
         </div>
 
-        {/* Business Name Input Section - REQUIRED */}
+        {/* organization Name Input Section - REQUIRED */}
         <div className="form-section">
           <label 
-            htmlFor="business" 
+            htmlFor="organization" 
             className="form-label"
           >
             Business Name <span className="required-indicator">*</span>
           </label>
           <input
             type="text"
-            id="business"
-            name="business"
-            value={formData.business}
+            id="organization"
+            name="organization"
+            value={formData.organization}
             onChange={handleChange}
             maxLength={200}
             className="form-input"
             placeholder="Enter business name"
             disabled={isSubmitting}
           />
-          {errors.business && (
-            <p className="error-message">{errors.business}</p>
+          {errors.organization && (
+            <p className="error-message">{errors.organization}</p>
           )}
           <p className="char-counter">
-            {formData.business.length}/200 characters
+            {formData.organization.length}/200 characters
           </p>
         </div>
 
         {/* Location Name Input Section - REQUIRED */}
         <div className="form-section">
           <label 
-            htmlFor="location_name" 
+            htmlFor="location" 
             className="form-label"
           >
             Location Name <span className="required-indicator">*</span>
           </label>
           <input
             type="text"
-            id="location_name"
-            name="location_name"
-            value={formData.location_name}
+            id="location"
+            name="location"
+            value={formData.location}
             onChange={handleChange}
             maxLength={200}
             className="form-input"
             placeholder="Enter location name"
             disabled={isSubmitting}
           />
-          {errors.location_name && (
-            <p className="error-message">{errors.location_name}</p>
+          {errors.location && (
+            <p className="error-message">{errors.location}</p>
           )}
           <p className="char-counter">
-            {formData.location_name.length}/200 characters
+            {formData.location.length}/200 characters
           </p>
         </div>
 
