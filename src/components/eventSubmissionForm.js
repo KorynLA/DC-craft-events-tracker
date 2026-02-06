@@ -346,7 +346,7 @@ export default function EventSubmissionForm() {
       link: sanitizeInput(formData.link),
       kids: sanitizeBoolean(formData.kids),
       location: sanitizeInput(formData.location),
-      date: formData.date,
+      date: sanitizeDate(formData.date),
       time: sanitizeTime(formData.time),
       organization: sanitizeInput(formData.organization),
       email: sanitizeInput(formData.email)
