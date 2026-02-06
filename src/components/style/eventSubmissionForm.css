@@ -1,94 +1,284 @@
-/* Event form styles to match new color scheme */
+/* Event Form Container */
 .event-form-container {
-  padding: 2rem; 
-  width: 100%;
   max-width: 500px;
-  margin: 0 auto;
-  font-family: Arial, sans-serif;
+  margin: 2rem auto 0 auto;
+  padding: 2rem;
   background-color: #f2f4f7;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  font-family: Arial, sans-serif;
+  width: 100%;
 }
 
+/* Form Title */
 .form-title {
-  text-align: center;
   font-size: 24px;
   font-weight: bold;
+  color: #2d3748;
   margin-bottom: 20px;
-  color: #2d3748; /* Dark blue-gray */
+  text-align: center;
 }
 
-/* Form section styles */
+/* Success Message */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #c3e6cb;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* API Error Message */
+.api-error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  border: 1px solid #f5c6cb;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Form Section */
 .form-section {
   margin-bottom: 20px;
   width: 98%;
 }
 
+/* Form Label */
 .form-label {
   display: block;
   font-size: 16px;
   font-weight: 600;
+  color: #3d4b6a;
   margin-bottom: 8px;
-  color: #3d4b6a; /* Medium blue-gray */
 }
 
+/* Required Indicator */
 .required-indicator {
   color: #e53e3e;
   margin-left: 3px;
 }
 
-/* Form input styles */
-.form-input,
-.form-textarea,
-.form-select {
+/* Form Input */
+.form-input {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #cbd5e0; /* Light blue-gray border */
-  border-radius: 4px;
   font-size: 16px;
-  background-color: #e6e9f0; /* Light blue-gray input background */
-  color: #4a5568; /* Medium blue-gray for text */
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  background-color: #e6e9f0;
+  color: #4a5568;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-input:focus,
-.form-textarea:focus,
-.form-select:focus {
-  border-color: #2563eb; /* Bright blue border on focus */
+.form-input:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Subtle blue glow */
-}
-.button-container {
-  text-align:center;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
-/* Form button styles */
-.submit-button {
-  background-color: #2563eb; /* Bright blue button */
-  color: white;
-  font-weight: 600;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  width: 50%;
-}
-
-.submit-button:hover {
-  background-color: #1d4ed8; /* Slightly darker blue on hover */
-}
-
-.submit-button:disabled {
-  background-color: #a0aec0; /* Muted blue-gray when disabled */
+.form-input:disabled {
+  background-color: #cbd5e0;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
-/* Form error styles */
-.form-error {
+.form-input::placeholder {
+  color: #a0aec0;
+}
+
+/* Form Textarea */
+.form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #cbd5e0;
+  border-radius: 4px;
+  background-color: #e6e9f0;
+  color: #4a5568;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.form-textarea:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.form-textarea::placeholder {
+  color: #a0aec0;
+}
+
+/* Error Message */
+.error-message {
   color: #e53e3e;
   font-size: 14px;
   margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Character Counter */
+.char-counter {
+  font-size: 14px;
+  color: #718096;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Date and Time Wrapper */
+.datetime-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .datetime-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Kid-Friendly Checkbox Group */
+.kids-checkbox-group {
+  display: flex;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #3d4b6a;
+  position: relative;
+}
+
+/* Hide default checkbox/radio */
+.checkbox-label input[type="checkbox"],
+.checkbox-label input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Custom checkbox square */
+.checkbox-label .checkmark {
+  position: relative;
+  height: 24px;
+  width: 24px;
+  background-color: #e6e9f0;
+  border: 2px solid #cbd5e0;
+  border-radius: 4px;
+  margin-right: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.checkbox-label:hover .checkmark {
+  background-color: #d4d9e6;
+  border-color: #2563eb;
+}
+
+/* When checked, change background and border */
+.checkbox-label input:checked ~ .checkmark {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkbox-label .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkbox-label input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark */
+.checkbox-label .checkmark:after {
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 11px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Disabled state */
+.checkbox-label input:disabled ~ .checkmark {
+  background-color: #cbd5e0;
+  border-color: #a0aec0;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+.checkbox-label:hover .checkbox-text {
+  color: #2d3748;
+}
+
+/* Button Container */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* Submit Button */
+.submit-button {
+  padding: 10px 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #2563eb;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 50%;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.submit-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button:disabled {
+  background-color: #a0aec0;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Date picker custom styling */
@@ -97,16 +287,37 @@
 }
 
 .react-datepicker__input-container input {
+  width: 100%;
   padding: 8px 12px;
-  border: 1px solid #cbd5e0; /* Light blue-gray border */
+  border: 1px solid #cbd5e0;
   border-radius: 4px;
   font-size: 16px;
-  background-color: #e6e9f0; /* Light blue-gray input background */
-  color: #4a5568; /* Medium blue-gray for text */
+  background-color: #e6e9f0;
+  color: #4a5568;
 }
 
 .react-datepicker__input-container input:focus {
-  border-color: #2563eb; /* Bright blue border on focus */
+  border-color: #2563eb;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); /* Subtle blue glow */
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .event-form-container {
+    padding: 1.5rem;
+  }
+
+  .form-title {
+    font-size: 20px;
+  }
+
+  .submit-button {
+    width: 100%;
+    padding: 12px 16px;
+  }
+  
+  .kids-checkbox-group {
+    gap: 1rem;
+  }
 }
