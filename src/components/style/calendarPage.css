@@ -8,6 +8,12 @@
   flex-direction: column;
   overflow: hidden;
 }
+
+@media (max-width: 640px) {
+  .calendar-container {
+    overflow: visible;
+  }
+}
 .calendar-header {
   padding: 1rem 1rem 0 1rem;
 }
@@ -35,13 +41,12 @@
   transition: background-color 0.2s;
 }
 .nav-button:hover {
-  background-color: #c1cade; 
+  background-color: #c1cade;
 }
 .calendar-grid {
-    margin: 0;
+  margin: 0;
   padding: 0;
   box-sizing: border-box;
-  
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 0.5rem;
@@ -108,7 +113,6 @@ hr, .divider {
   text-overflow: ellipsis;
 }
 
-/* ── Desktop hover popup (unchanged) ── */
 .event-popup {
   position: absolute;
   top: 100%;
@@ -138,20 +142,30 @@ hr, .divider {
   text-decoration: underline;
 }
 
-/* Mobile modal hidden by default (desktop) */
 .mobile-modal-overlay {
   display: none;
 }
 
-/* ── Mobile only ── */
 @media (max-width: 640px) {
   .month-title {
     font-size: 1rem;
   }
 
+  .calendar-grid-scroll-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+  }
+
   .calendar-grid {
     gap: 2px;
     padding: 0.4rem;
+    min-width: 292px;
+    width: 100%;
+    flex: none;
+    height: auto;
   }
 
   .day-header {
@@ -183,12 +197,10 @@ hr, .divider {
     cursor: pointer;
   }
 
-  /* Hide desktop hover popup on mobile */
   .event-popup {
     display: none !important;
   }
 
-  /* Mobile modal overlay */
   .mobile-modal-overlay {
     position: fixed;
     inset: 0;
