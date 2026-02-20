@@ -6,7 +6,7 @@
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: visible;
 }
 
 @media (max-width: 640px) {
@@ -45,7 +45,6 @@
 }
 .calendar-grid {
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -97,7 +96,7 @@ hr, .divider {
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+
   flex: 1;
 }
 .event-item {
@@ -160,39 +159,47 @@ hr, .divider {
   }
 
   .calendar-grid {
-    gap: 2px;
-    padding: 0.4rem;
-    min-width: 292px;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    min-width: 0;
     width: 100%;
     flex: none;
     height: auto;
+    grid-template-columns: repeat(7, max-content);
   }
 
   .day-header {
-    padding: 0.2rem 0;
-    font-size: 0.55rem;
+    padding: 2px 0;
+    font-size: 9px;
     text-align: center;
     letter-spacing: -0.01em;
   }
 
   .calendar-day {
-    min-height: 3.2rem;
-    border-radius: 0.2rem;
+    max-width: 50px;
+    min-height: 48px;
+    border-radius: 0;
+    height: auto;
+    overflow: visible;
+    padding: 0;
   }
 
   .day-number {
-    font-size: 0.55rem;
-    padding: 0.1rem 0.1rem 0 0.1rem;
+    font-size: 9px;
+    padding: 1px;
   }
 
   .events-container {
-    padding: 0.1rem;
+    padding: 1px;
   }
 
   .event-item {
-    font-size: 0.5rem;
-    padding: 0.1rem;
-    margin-bottom: 0.1rem;
+    font-size: 8px;
+    padding: 1px;
+    white-space: normal;
+    overflow: visible;
+    margin-bottom: 5px;
     max-width: 100%;
     cursor: pointer;
   }
