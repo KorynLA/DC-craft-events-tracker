@@ -6,6 +6,12 @@
   justify-content: center; /* Center the tabs container */
 }
 
+.nav-auth-container {
+  width: 100%;
+  font-family: Arial, sans-serif;
+}
+
+
 .nav-tabs {
   display: flex;
   max-width: 800px;
@@ -34,6 +40,47 @@
 .nav-tab.active {
   color: #2563eb; /* Bright blue for active tab */
   border-bottom-color: #2563eb; /* Bright blue border for active tab */
+}
+
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 1;
+}
+
+.navbar-username {
+  font-size: 13px;
+  color: #c1cade;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-tab-login {
+  background-color: #c1cade;
+  color: #2d3748;
+  font-size: 16px;
+  padding: 10px 12px;
+}
+
+.nav-tab-login:hover {
+  background-color: #1d4ed8;
+  color: white;
+}
+
+.nav-tab-logout {
+  background-color: #c1cade;
+  color: #2d3748;
+  font-size: 16px;
+  padding: 10px 12px;
+}
+
+.nav-tab-logout:hover {
+  background-color: #e6e9f0;
+  color: #2d3748;
 }
 
 /* Responsive styles */
