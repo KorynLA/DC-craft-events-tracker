@@ -43,19 +43,11 @@
   gap: 10px;
 }
 
-.nav-username {
-  font-size: 13px;
-  color: #c1cade;
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .nav-tab-login,
 .nav-tab-logout {
   border-bottom: none !important;
   color: #2d3748 !important;
+  background-color: #8f9db0;
   transition: color 0s, background-color 0.2s ease;
 }
 
@@ -72,6 +64,18 @@
 
 /* Responsive styles */
 @media (max-width: 640px) {
+  .nav-tab-login:hover,
+  .nav-tab-logout:hover {
+    background-color: #8f9db0 !important;
+    color: #2d3748 !important;
+  }
+
+  .nav-tab-login:active,
+  .nav-tab-logout:active {
+    background-color: #1d4ed8;
+    color: #4a5568 !important;
+  }
+
   .nav-auth-container {
     font-family: Arial, sans-serif;
     color: #2d3748;
@@ -82,22 +86,10 @@
   .nav-tabs {
     justify-content: space-between;
   }
-  
-  .nav-tab-login:hover,
-  .nav-tab-logout:hover {
-    background-color: #e6e9f0;
-    color: #4a5568 !important;
-  }
-
-  .nav-tab-login:active,
-  .nav-tab-logout:active {
-    background-color: #1d4ed8;
-    color: #4a5568 !important;
-  }
 
   .nav-tab:hover {
-    color: #2d3748; /* Darker blue-gray on hover */
-    background-color: #e6e9f0; /* Slightly darker blue-gray on hover */
+    color: #2d3748; 
+    background-color: #e6e9f0;
   }
 
   .nav-tab.active {
