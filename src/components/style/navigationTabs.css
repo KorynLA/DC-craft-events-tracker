@@ -62,7 +62,6 @@
   border-bottom-color: transparent !important;
 }
 
-/* Responsive styles */
 @media (max-width: 640px) {
   .nav-tab-login:hover,
   .nav-tab-logout:hover {
