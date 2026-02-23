@@ -6,12 +6,6 @@
   justify-content: center; /* Center the tabs container */
 }
 
-.nav-auth-container {
-  width: 100%;
-  font-family: Arial, sans-serif;
-}
-
-
 .nav-tabs {
   display: flex;
   max-width: 800px;
@@ -42,15 +36,14 @@
   border-bottom-color: #2563eb; /* Bright blue border for active tab */
 }
 
-.navbar-auth {
+.nav-auth-container {
   display: flex;
-  align-items: center;
   justify-content: flex-end;
+  font-family: Arial, sans-serif;
   gap: 10px;
-  flex: 1;
 }
 
-.navbar-username {
+.nav-username {
   font-size: 13px;
   color: #c1cade;
   max-width: 160px;
@@ -59,40 +52,57 @@
   white-space: nowrap;
 }
 
-.nav-tab-login {
-  background-color: #c1cade;
-  color: #2d3748;
-  font-size: 16px;
-  padding: 10px 12px;
+.nav-tab-login,
+.nav-tab-logout {
+  border-bottom: none !important;
+  color: #2d3748 !important;
+  transition: color 0s, background-color 0.2s ease;
 }
 
 .nav-tab-login:hover {
   background-color: #1d4ed8;
-  color: white;
+  color: white !important;
 }
 
-.nav-tab-logout {
-  background-color: #c1cade;
-  color: #2d3748;
-  font-size: 16px;
-  padding: 10px 12px;
-}
-
-.nav-tab-logout:hover {
-  background-color: #e6e9f0;
-  color: #2d3748;
+.nav-tab-login.active,
+.nav-tab-logout.active {
+  color: #2d3748 !important;
+  border-bottom-color: transparent !important;
 }
 
 /* Responsive styles */
 @media (max-width: 640px) {
+  .nav-auth-container {
+    font-family: Arial, sans-serif;
+    color: #2d3748;
+    font-size: 14px;        /* Smaller but readable */
+    width: auto;            /* Let content control width */
+    float: right;
+  }
   .nav-tabs {
     justify-content: space-between;
   }
   
-  .nav-tab {
-    padding: 1rem 0.75rem;
-    font-size: 14px;
-    text-align: center;
-    flex: 1;
+  .nav-tab-login:hover,
+  .nav-tab-logout:hover {
+    background-color: #e6e9f0;
+    color: #4a5568 !important;
   }
+
+  .nav-tab-login:active,
+  .nav-tab-logout:active {
+    background-color: #1d4ed8;
+    color: #4a5568 !important;
+  }
+
+  .nav-tab:hover {
+    color: #2d3748; /* Darker blue-gray on hover */
+    background-color: #e6e9f0; /* Slightly darker blue-gray on hover */
+  }
+
+  .nav-tab.active {
+    color: #2563eb; /* Bright blue for active tab */
+    border-bottom-color: #2563eb; /* Bright blue border for active tab */
+  }
+
 }

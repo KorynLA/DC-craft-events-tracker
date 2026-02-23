@@ -82,12 +82,12 @@ export default function NavigationTabs() {
   };
 
   return (
-    <div className="">
-      <div className="nav-header"> 
-              <div className="navbar-auth">
+    <div className="nav-header">
+      <div className="nav-auth-container"> 
+          <div className="nav-auth">
               {authLoading ? user : null ? (
                 <>
-                  <span className="navbar-username">
+                  <span className="nav-username">
                     {user.signInDetails?.loginId || user.username}
                   </span>
                   <div
@@ -113,8 +113,9 @@ export default function NavigationTabs() {
                   Log In
                 </div>
               )}
-            </div>
+          </div>
       </div>
+      
       <div className="nav-tabs-container">
         <div className="nav-tabs">
           {/* About Tab */}
