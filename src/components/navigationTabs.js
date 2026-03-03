@@ -72,8 +72,8 @@ export default function NavigationTabs() {
   };
 
   const handleLoginClick= () => {
-    setActiveTab('about');
-    navigate('/');
+    setActiveTab('login');
+    navigate('/login');
   };
 
   const handleLogoutClick= () => {
@@ -104,7 +104,7 @@ export default function NavigationTabs() {
               ) : (
                 <div
                   className="nav-tab nav-tab-login"
-                  onClick={() => handleLogoutClick()}
+                  onClick={() => handleLoginClick()}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()}

@@ -37,6 +37,8 @@
 }
 
 .nav-auth-container {
+  padding-top: .5rem;
+  padding-right: .5rem;
   display: flex;
   justify-content: flex-end;
   font-family: Arial, sans-serif;
@@ -45,6 +47,8 @@
 
 .nav-tab-login,
 .nav-tab-logout {
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem !important;
   border-bottom: none !important;
   color: #2d3748 !important;
   background-color: #8f9db0;
@@ -76,6 +80,8 @@
   }
 
   .nav-auth-container {
+    padding-top: .1rem !important;
+    padding-right: .1rem !important;
     font-family: Arial, sans-serif;
     color: #2d3748;
     font-size: 14px;        /* Smaller but readable */
