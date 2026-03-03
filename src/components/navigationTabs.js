@@ -20,7 +20,8 @@ import './style/navigationTabs.css';
 export default function NavigationTabs() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+  const authLoading=null;
+  const user='test';
   /**
    * Determines which tab should be active based on the current URL path.
    * Uses route pattern matching to identify the appropriate tab.
@@ -53,7 +54,7 @@ export default function NavigationTabs() {
   const handleTabClick = (tab) => {
     // Update active tab state for immediate visual feedback
     setActiveTab(tab);
-    
+
     switch (tab) {
       case 'about':
         navigate('/about');
@@ -70,38 +71,83 @@ export default function NavigationTabs() {
     }
   };
 
+  const handleLoginClick= () => {
+    setActiveTab('login');
+    navigate('/login');
+  };
+
+  const handleLogoutClick= () => {
+    setActiveTab('about');
+    navigate('/');
+  };
+
   return (
-    <div className="nav-tabs-container">
-      <div className="nav-tabs">
-        {/* About Tab */}
-        <div 
-          className={`nav-tab ${activeTab === 'about' ? 'active' : ''}`}
-          onClick={() => handleTabClick('about')}
-          role="button"
-          tabIndex={0}
-          aria-label="Navigate to About page"
-        >
-          About
-        </div>
-        
-        <div 
-          className={`nav-tab ${activeTab === 'calendar' ? 'active' : ''}`}
-          onClick={() => handleTabClick('calendar')}
-          role="button"
-          tabIndex={0}
-          aria-label="Navigate to Calendar page"
-        >
-          Calendar
-        </div>
-        
-        <div 
-          className={`nav-tab ${activeTab === 'submit-event' ? 'active' : ''}`}
-          onClick={() => handleTabClick('submit-event')}
-          role="button"
-          tabIndex={0}
-          aria-label="Navigate to Submit Event page"
-        >
-          Submit Event
+    <div className="nav-header">
+      <div className="nav-auth-container"> 
+          <div className="nav-auth">
+              {authLoading ? user : null ? (
+                <>
+                  <span className="nav-username">
+                    {user.signInDetails?.loginId || user.username}
+                  </span>
+                  <div
+                    className="nav-tab nav-tab-logout"
+                    onClick={() => handleLogoutClick()}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => e.key === 'Enter' && handleLogoutClick()}
+                    aria-label="Log out"
+                  >
+                    Log Out
+                  </div>
+                </>
+              ) : (
+                <div
+                  className="nav-tab nav-tab-login"
+                  onClick={() => handleLoginClick()}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && handleLoginClick()}
+                  aria-label="Log in"
+                >
+                  Log In
+                </div>
+              )}
+          </div>
+      </div>
+      
+      <div className="nav-tabs-container">
+        <div className="nav-tabs">
+          {/* About Tab */}
+          <div 
+            className={`nav-tab ${activeTab === 'about' ? 'active' : ''}`}
+            onClick={() => handleTabClick('about')}
+            role="button"
+            tabIndex={0}
+            aria-label="Navigate to About page"
+          >
+            About
+          </div>
+          
+          <div 
+            className={`nav-tab ${activeTab === 'calendar' ? 'active' : ''}`}
+            onClick={() => handleTabClick('calendar')}
+            role="button"
+            tabIndex={0}
+            aria-label="Navigate to Calendar page"
+          >
+            Calendar
+          </div>
+          
+          <div 
+            className={`nav-tab ${activeTab === 'submit-event' ? 'active' : ''}`}
+            onClick={() => handleTabClick('submit-event')}
+            role="button"
+            tabIndex={0}
+            aria-label="Navigate to Submit Event page"
+          >
+            Submit Event
+          </div>
         </div>
       </div>
     </div>

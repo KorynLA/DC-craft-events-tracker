@@ -3,6 +3,7 @@ import NavigationTabs from './components/navigationTabs';
 import CalendarPage from './components/calendarPage';
 import EventSubmissionForm from './components/eventSubmissionForm';
 import AboutPage from './components/aboutPage';
+import LoginPage from './components/loginPage';
 
 /**
  * App - Main application component with routing
@@ -43,6 +44,9 @@ export default function App() {
             
             {/* Event submission page - form for creating new events */}
             <Route path="/submit-event" element={<EventSubmissionForm />} />
+
+            {/* Login Page - page to login with SSO */}
+            <Route path="/login" element={<LoginPage />} />
             
             {/* Catch-all route - redirects unknown paths to about page */}
             <Route path="*" element={<Navigate to="/about" replace />} />

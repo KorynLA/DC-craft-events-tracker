@@ -36,16 +36,70 @@
   border-bottom-color: #2563eb; /* Bright blue border for active tab */
 }
 
-/* Responsive styles */
+.nav-auth-container {
+  padding-top: .5rem;
+  padding-right: .5rem;
+  display: flex;
+  justify-content: flex-end;
+  font-family: Arial, sans-serif;
+  gap: 10px;
+}
+
+.nav-tab-login,
+.nav-tab-logout {
+  border-radius: 999px;
+  padding: 0.5rem 1.5rem !important;
+  border-bottom: none !important;
+  color: #2d3748 !important;
+  background-color: #8f9db0;
+  transition: color 0s, background-color 0.2s ease;
+}
+
+.nav-tab-login:hover {
+  background-color: #1d4ed8;
+  color: white !important;
+}
+
+.nav-tab-login.active,
+.nav-tab-logout.active {
+  color: #2d3748 !important;
+  border-bottom-color: transparent !important;
+}
+
 @media (max-width: 640px) {
+  .nav-tab-login:hover,
+  .nav-tab-logout:hover {
+    background-color: #8f9db0 !important;
+    color: #2d3748 !important;
+  }
+
+  .nav-tab-login:active,
+  .nav-tab-logout:active {
+    background-color: #1d4ed8;
+    color: #4a5568 !important;
+  }
+
+  .nav-auth-container {
+    padding-top: .1rem !important;
+    padding-right: .1rem !important;
+    font-family: Arial, sans-serif;
+    color: #2d3748;
+    font-size: 14px;        /* Smaller but readable */
+    width: auto;            /* Let content control width */
+    float: right;
+  }
   .nav-tabs {
     justify-content: space-between;
   }
-  
-  .nav-tab {
-    padding: 1rem 0.75rem;
-    font-size: 14px;
-    text-align: center;
-    flex: 1;
+
+  .nav-tab:hover {
+    color: #2d3748; 
+    background-color: #e6e9f0;
   }
+
+  .nav-tab.active {
+    color: #2563eb; /* Bright blue for active tab */
+    border-bottom-color: #2563eb; /* Bright blue border for active tab */
+  }
+
 }
