@@ -51,13 +51,8 @@ export default function NavigationTabs() {
    *                      ('about', 'calendar', or 'submit-event')
    */
   const handleTabClick = (tab) => {
-    // Update active tab state for immediate visual feedback
     setActiveTab(tab);
-    
     switch (tab) {
-      case 'about':
-        navigate('/about');
-        break;
       case 'calendar':
         navigate('/calendar');
         break;
@@ -65,25 +60,20 @@ export default function NavigationTabs() {
         navigate('/submit-event');
         break;
       default:
-        // Fallback to root route for unknown tab identifiers
         navigate('/');
     }
   };
 
   return (
-    <div className="nav-tabs-container">
+    <div className="header ">
+      <div className="logo"           
+        onClick={() => handleTabClick('about')}
+        role="button"
+        tabIndex={0}
+        aria-label="Navigate to About page">
+        CreateDMV<span className="period">.</span>
+      </div>
       <div className="nav-tabs">
-        {/* About Tab */}
-        <div 
-          className={`nav-tab ${activeTab === 'about' ? 'active' : ''}`}
-          onClick={() => handleTabClick('about')}
-          role="button"
-          tabIndex={0}
-          aria-label="Navigate to About page"
-        >
-          About
-        </div>
-        
         <div 
           className={`nav-tab ${activeTab === 'calendar' ? 'active' : ''}`}
           onClick={() => handleTabClick('calendar')}
@@ -101,7 +91,7 @@ export default function NavigationTabs() {
           tabIndex={0}
           aria-label="Navigate to Submit Event page"
         >
-          Submit Event
+          Submit
         </div>
       </div>
     </div>
