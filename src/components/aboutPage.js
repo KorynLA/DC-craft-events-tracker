@@ -28,12 +28,12 @@ export default function AboutPage() {
       <div className="usage-section">
         <h2 className="usage-section-title">How to Use This Application</h2>
         <p className="usage-text">
-          Navigate through the tabs above to access different features:
+          Navigate above to access different features:
         </p>
         <ul className="usage-list">
-          <li><strong>About:</strong> Learn about the purpose and features of this application</li>
+          <li><strong>CreateDMV:</strong> Learn about the purpose and features of this application</li>
           <li><strong>Calendar:</strong> View all upcoming craft events in a calendar format</li>
-          <li><strong>Submit Event:</strong> Add your own craft event to the community calendar</li>
+          <li><strong>Submit:</strong> Add your own craft event to the community calendar</li>
         </ul>
       </div>
       

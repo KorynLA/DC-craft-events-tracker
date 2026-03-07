@@ -61,7 +61,7 @@ describe('AboutPage Component', () => {
 
     it('renders navigation instructions', () => {
       render(<AboutPage />);
-      const instructions = screen.getByText(/Navigate through the tabs above to access different features/);
+      const instructions = screen.getByText(/Navigate above to access different features:/);
       expect(instructions).toBeInTheDocument();
       expect(instructions).toHaveClass('usage-text');
     });
@@ -73,21 +73,15 @@ describe('AboutPage Component', () => {
       expect(list.tagName).toBe('UL');
     });
 
-    it('renders About tab description', () => {
-      render(<AboutPage />);
-      expect(screen.getByText('About:')).toBeInTheDocument();
-      expect(screen.getByText(/Learn about the purpose and features of this application/)).toBeInTheDocument();
-    });
-
     it('renders Calendar tab description', () => {
       render(<AboutPage />);
       expect(screen.getByText('Calendar:')).toBeInTheDocument();
       expect(screen.getByText(/View all upcoming craft events in a calendar format/)).toBeInTheDocument();
     });
 
-    it('renders Submit Event tab description', () => {
+    it('renders Submit tab description', () => {
       render(<AboutPage />);
-      expect(screen.getByText('Submit Event:')).toBeInTheDocument();
+      expect(screen.getByText('Submit:')).toBeInTheDocument();
       expect(screen.getByText(/Add your own craft event to the community calendar/)).toBeInTheDocument();
     });
 
@@ -101,9 +95,9 @@ describe('AboutPage Component', () => {
       render(<AboutPage />);
       const strongElements = document.querySelectorAll('.usage-list strong');
       expect(strongElements).toHaveLength(3);
-      expect(strongElements[0]).toHaveTextContent('About:');
+      expect(strongElements[0]).toHaveTextContent('CreateDMV:');
       expect(strongElements[1]).toHaveTextContent('Calendar:');
-      expect(strongElements[2]).toHaveTextContent('Submit Event:');
+      expect(strongElements[2]).toHaveTextContent('Submit:');
     });
   });
 
@@ -178,7 +172,7 @@ describe('AboutPage Component', () => {
         'craft related community events',
         'Browse upcoming events',
         'submit your own events',
-        'Navigate through the tabs above',
+        'Navigate above to access different features',
         'questions or need assistance'
       ];
       
