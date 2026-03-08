@@ -46,8 +46,38 @@
   border-bottom-color: #2563eb; /* Bright blue border for active tab */
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 2rem;
+  gap: 12px;
+}
+
+/* Login button — ghost/outline style */
+.login-btn {
+  padding: 0.45rem 1.2rem;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  background: transparent;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.login-btn:hover {
+  background: #2563eb;
+  color: #fff;
+}
+
 /* Responsive styles */
 @media (max-width: 640px) {
+  .header {
+    border-bottom: 0px !important;
+  }
   .logo {
     font-family: Arial, sans-serif;
     font-size: 20px;
@@ -64,5 +94,88 @@
     padding: 1rem 0.75rem;
     font-size: 14px;
     text-align: center;
+  }
+  .header-actions {
+    padding: 0 1rem;
+    gap: 10px;
+  }
+
+  .login-btn {
+    padding: 0.35rem 0.9rem;
+    font-size: 13px;
+  }
+
+  /* Show hamburger on mobile */
+  .hamburger {
+    display: flex;
+  }
+
+  /* Show mobile dropdown */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.mobile-menu-item {
+  width: 100%;
+  font-size: 20px !important;
+  text-align: center;
+}
+
+  .mobile-menu-item:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-menu-item:hover {
+    background: #e8edf5;
+    color: #2d3748;
+  }
+
+  .mobile-menu-item.active {
+    color: #2563eb;
+    background: #eff6ff;
+  }
+}
+
+/* Hamburger button */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #4a5568;
+  border-radius: 2px;
+}
+
+/* Mobile dropdown menu */
+.mobile-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.mobile-menu-item {
+  width: 100%;
+  text-align: center;
+}
+.mobile-menu-item:last-child { border-bottom: none; }
+.mobile-menu-item:hover { background: #e8edf5; color: #2d3748; }
+
+@media (max-width: 640px) {
+  .header { grid-template-columns: 1fr auto; }
+  .nav-tabs { display: none; }
+  .hamburger { display: flex; }
+  .mobile-menu-item {
+    text-align: center;
+    width: 100vw;
   }
 }

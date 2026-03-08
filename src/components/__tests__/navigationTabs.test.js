@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
 import NavigationTabs from '../navigationTabs';
@@ -31,10 +31,10 @@ describe('NavigationTabs - tab count', () => {
     expect(tabs).toHaveLength(2);
   });
 
-  it('renders exactly 3 interactive elements total (logo + 2 tabs)', () => {
+  it('renders exactly 4 interactive elements total (logo + login + 2 tabs)', () => {
     renderNav();
     const allButtons = screen.getAllByRole('button');
-    expect(allButtons).toHaveLength(3);
+    expect(allButtons).toHaveLength(4);
   });
 });
 
@@ -118,5 +118,37 @@ describe('NavigationTabs - accessibility', () => {
   it('Submit tab has correct aria-label', () => {
     renderNav();
     expect(screen.getByLabelText('Navigate to Submit Event page')).toBeInTheDocument();
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOGIN BUTTON TESTS
+// ─────────────────────────────────────────────────────────────────────────────
+describe('Login button', () => {
+  test('renders the login button', () => {
+    renderNav();
+    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
+  });
+
+  test('login button has correct text', () => {
+    renderNav();
+    expect(screen.getByRole('button', { name: /log in/i })).toHaveTextContent('Log in');
+  });
+
+  test('login button is visible on desktop', () => {
+    renderNav();
+    const btn = screen.getByRole('button', { name: /log in/i });
+    expect(btn).toBeVisible();
+  });
+
+  test('login button has correct aria-label', () => {
+    renderNav();
+    expect(screen.getByLabelText(/log in/i)).toBeInTheDocument();
+  });
+
+  test('login button has login-btn class', () => {
+    renderNav();
+    const btn = screen.getByRole('button', { name: /log in/i });
+    expect(btn).toHaveClass('login-btn');
   });
 });

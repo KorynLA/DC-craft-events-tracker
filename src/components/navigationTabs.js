@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import './style/navigationTabs.css';
 
@@ -20,6 +20,15 @@ import './style/navigationTabs.css';
 export default function NavigationTabs() {
   const navigate = useNavigate();
   const location = useLocation();
+   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 640);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
   
   /**
    * Determines which tab should be active based on the current URL path.
@@ -52,6 +61,7 @@ export default function NavigationTabs() {
    */
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+    setMobileMenuOpen(false);
     switch (tab) {
       case 'calendar':
         navigate('/calendar');
@@ -94,6 +104,23 @@ export default function NavigationTabs() {
           Submit
         </div>
       </div>
+      <div className="header-actions">
+        <button className="login-btn" aria-label="Log in">Log in</button>
+        {isMobile && (
+          <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen}>
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+          </button>
+        )}
+      </div>
+      {isMobile && mobileMenuOpen && (
+        <div className="mobile-menu">
+        {['calendar', 'submit-event'].map(tab => (
+          <div key={tab} className={`mobile-menu-item ${activeTab === tab ? 'active' : ''}`} onClick={() => handleTabClick(tab)} role="button" tabIndex={0}>
+            {tab === 'submit-event' ? 'Submit' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </div>))}
+        </div>
+      )}
     </div>
   );
 }
