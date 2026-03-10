@@ -74,6 +74,27 @@ export default function NavigationTabs() {
     }
   };
 
+  /**
+   * Handles button click events by navigating to the login URL
+   */
+  const handleButtonClick = () => {
+    const loginUrl = process.env.REACT_APP_LOGIN_URL;
+
+    if (!loginUrl) {
+      alert("Login is temporarily unavailable. Please try again later.");
+      return;
+    }
+
+    try {
+      new URL(loginUrl);
+      window.location.assign(loginUrl);
+    } catch (err) {
+      console.error("Invalid login URL", err);
+      alert("Login service is misconfigured.");
+    }
+    window.location.href = process.env.REACT_APP_LOGIN_URL;
+  };
+
   return (
     <div className="header ">
       <div className="logo"           
@@ -105,7 +126,7 @@ export default function NavigationTabs() {
         </div>
       </div>
       <div className="header-actions">
-        <button className="login-btn" aria-label="Log in">Log in</button>
+        <button onClick={()=>handleButtonClick()} className="login-btn" aria-label="Log in">Log in</button>
         {isMobile && (
           <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen}>
             <span className="hamburger-line" />
