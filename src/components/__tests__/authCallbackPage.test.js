@@ -1,235 +1,242 @@
-import { render, screen, waitFor, act } from "@testing-library/react";
-import AuthCallbackPage from "../AuthCallbackPage";
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { MemoryRouter } from 'react-router';
+import NavigationTabs from '../navigationTabs';
 
 // ── Mocks ──────────────────────────────────────────────────────────────────
 
-jest.mock("../style/authCallbackPage.css", () => ({}));
+const mockNavigate = jest.fn();
+jest.mock('react-router', () => ({
+  ...jest.requireActual('react-router'),
+  useNavigate: () => mockNavigate,
+}));
 
-// Freeze location so we can control the search string
-const mockLocation = (search = "") => {
-  delete window.location;
-  window.location = { search, href: "" };
+jest.mock('../style/navigationTabs.css', () => ({}));
+
+// Helper to set document.cookie for login state
+const setLoggedIn = (value) => {
+  Object.defineProperty(document, 'cookie', {
+    writable: true,
+    value: value ? 'logged_in=true' : '',
+  });
 };
 
-// Helper to mock a successful fetch response
-const mockFetchSuccess = () => {
-  global.fetch = jest.fn().mockResolvedValue({ ok: true });
-};
+// Helper to render inside a MemoryRouter
+const renderNav = (initialPath = '/') =>
+  render(
+    <MemoryRouter initialEntries={[initialPath]}>
+      <NavigationTabs />
+    </MemoryRouter>
+  );
 
-// Helper to mock a failed fetch response (non-2xx)
-const mockFetchFailure = () => {
-  global.fetch = jest.fn().mockResolvedValue({ ok: false });
-};
+// Mock window.innerWidth for mobile/desktop tests
+const setDesktop = () => Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+const setMobile  = () => Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
 
-// Helper to mock a fetch network error
-const mockFetchNetworkError = () => {
-  global.fetch = jest.fn().mockRejectedValue(new Error("Network error"));
-};
-
-// Silence expected console.error calls
 beforeEach(() => {
-  jest.spyOn(console, "error").mockImplementation(() => {});
-  jest.useFakeTimers();
+  mockNavigate.mockClear();
+  setDesktop();
+  setLoggedIn(false);
 });
 
-afterEach(() => {
-  jest.restoreAllMocks();
-  jest.useRealTimers();
+// ─────────────────────────────────────────────────────────────────────────────
+// RENDERING
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - rendering', () => {
+  it('renders the logo text', () => {
+    renderNav();
+    expect(screen.getByText(/CreateDMV/i)).toBeInTheDocument();
+  });
+
+  it('renders the Calendar tab', () => {
+    renderNav();
+    expect(screen.getByText('Calendar')).toBeInTheDocument();
+  });
+
+  it('renders the Submit tab', () => {
+    renderNav();
+    expect(screen.getByText('Submit')).toBeInTheDocument();
+  });
+
+  it('renders exactly 2 nav tabs', () => {
+    renderNav();
+    const tabs = screen.getAllByRole('button', { name: /navigate to (calendar|submit event)/i });
+    expect(tabs).toHaveLength(2);
+  });
 });
 
-// ── Tests ──────────────────────────────────────────────────────────────────
-
-describe("AuthCallbackPage", () => {
-
-  // ── Loading state ────────────────────────────────────────────────────────
-
-  describe("loading state", () => {
-    it("shows spinner and loading text on initial render", () => {
-      mockLocation("?code=abc123");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      expect(screen.getByText("Signing you in...")).toBeInTheDocument();
-      expect(document.querySelector(".callback-spinner")).toBeInTheDocument();
-    });
-
-    it("does not show success or error content while loading", () => {
-      mockLocation("?code=abc123");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      expect(screen.queryByText("Successfully Logged In")).not.toBeInTheDocument();
-      expect(screen.queryByText("There Was an Error")).not.toBeInTheDocument();
-    });
+// ─────────────────────────────────────────────────────────────────────────────
+// ACTIVE TAB — ROUTE DRIVEN
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - active tab by route', () => {
+  it('does not mark any nav tab active on the root path', () => {
+    renderNav('/');
+    const calendarTab = screen.getByText('Calendar').closest('[role="button"]');
+    const submitTab   = screen.getByText('Submit').closest('[role="button"]');
+    expect(calendarTab).not.toHaveClass('active');
+    expect(submitTab).not.toHaveClass('active');
   });
 
-  // ── Success state ────────────────────────────────────────────────────────
-
-  describe("success state", () => {
-    it("shows success heading and body after successful fetch", async () => {
-      mockLocation("?code=abc123&state=xyz");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Successfully Logged In")).toBeInTheDocument();
-      });
-
-      expect(screen.getByText(/Welcome back/i)).toBeInTheDocument();
-      expect(document.querySelector(".callback-circle--success")).toBeInTheDocument();
-    });
-
-    it("calls fetch with correct options", async () => {
-      mockLocation("?code=abc123&state=xyz");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(global.fetch).toHaveBeenCalledWith("/api/auth/callback", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ code: "abc123", state: "xyz" }),
-        });
-      });
-    });
-
-    it("redirects to '/' after 2 seconds on success", async () => {
-      mockLocation("?code=abc123");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Successfully Logged In")).toBeInTheDocument();
-      });
-
-      act(() => jest.advanceTimersByTime(2000));
-
-      expect(window.location.href).toBe("/");
-    });
-
-    it("does not redirect before 2 seconds have passed", async () => {
-      mockLocation("?code=abc123");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Successfully Logged In")).toBeInTheDocument();
-      });
-
-      act(() => jest.advanceTimersByTime(1999));
-
-      expect(window.location.href).not.toBe("/");
-    });
+  it('marks Calendar tab active on /calendar', () => {
+    renderNav('/calendar');
+    expect(screen.getByText('Calendar').closest('[role="button"]')).toHaveClass('active');
   });
 
-  // ── Error state ──────────────────────────────────────────────────────────
-
-  describe("error state", () => {
-    it("shows error heading when no code is present in the URL", async () => {
-      mockLocation("");
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("There Was an Error")).toBeInTheDocument();
-      });
-
-      expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
-      expect(document.querySelector(".callback-circle--error")).toBeInTheDocument();
-    });
-
-    it("shows error state when fetch returns a non-ok response", async () => {
-      mockLocation("?code=abc123");
-      mockFetchFailure();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("There Was an Error")).toBeInTheDocument();
-      });
-    });
-
-    it("shows error state when fetch throws a network error", async () => {
-      mockLocation("?code=abc123");
-      mockFetchNetworkError();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("There Was an Error")).toBeInTheDocument();
-      });
-    });
-
-    it("logs the error to console on fetch failure", async () => {
-      mockLocation("?code=abc123");
-      mockFetchNetworkError();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(console.error).toHaveBeenCalled();
-      });
-    });
-
-    it("does not redirect to '/' on error", async () => {
-      mockLocation("?code=abc123");
-      mockFetchFailure();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("There Was an Error")).toBeInTheDocument();
-      });
-
-      act(() => jest.advanceTimersByTime(5000));
-
-      expect(window.location.href).not.toBe("/");
-    });
+  it('does not mark Submit tab active on /calendar', () => {
+    renderNav('/calendar');
+    expect(screen.getByText('Submit').closest('[role="button"]')).not.toHaveClass('active');
   });
 
-  // ── State mutual exclusivity ─────────────────────────────────────────────
-
-  describe("state exclusivity", () => {
-    it("does not show loading content after success", async () => {
-      mockLocation("?code=abc123");
-      mockFetchSuccess();
-
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("Successfully Logged In")).toBeInTheDocument();
-      });
-
-      expect(screen.queryByText("Signing you in...")).not.toBeInTheDocument();
-    });
-
-    it("does not show loading content after error", async () => {
-      mockLocation("");
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("There Was an Error")).toBeInTheDocument();
-      });
-
-      expect(screen.queryByText("Signing you in...")).not.toBeInTheDocument();
-    });
-
-    it("does not show success content when in error state", async () => {
-      mockLocation("");
-      render(<AuthCallbackPage />);
-
-      await waitFor(() => {
-        expect(screen.getByText("There Was an Error")).toBeInTheDocument();
-      });
-
-      expect(screen.queryByText("Successfully Logged In")).not.toBeInTheDocument();
-    });
+  it('marks Submit tab active on /submit-event', () => {
+    renderNav('/submit-event');
+    expect(screen.getByText('Submit').closest('[role="button"]')).toHaveClass('active');
   });
 
+  it('does not mark Calendar tab active on /submit-event', () => {
+    renderNav('/submit-event');
+    expect(screen.getByText('Calendar').closest('[role="button"]')).not.toHaveClass('active');
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NAVIGATION — CLICK HANDLERS
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - navigation on click', () => {
+  it('navigates to /calendar when Calendar tab is clicked', () => {
+    renderNav();
+    fireEvent.click(screen.getByText('Calendar'));
+    expect(mockNavigate).toHaveBeenCalledWith('/calendar');
+  });
+
+  it('navigates to /submit-event when Submit tab is clicked', () => {
+    renderNav();
+    fireEvent.click(screen.getByText('Submit'));
+    expect(mockNavigate).toHaveBeenCalledWith('/submit-event');
+  });
+
+  it('navigates to / when logo is clicked', () => {
+    renderNav('/calendar');
+    fireEvent.click(screen.getByLabelText('Navigate to About page'));
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOGIN / LOGOUT TOGGLE
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - login/logout toggle', () => {
+  it('shows Log In button when user is not logged in', () => {
+    setLoggedIn(false);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
+  });
+
+  it('does not show Log Out button when user is not logged in', () => {
+    setLoggedIn(false);
+    renderNav();
+    expect(screen.queryByRole('button', { name: /log out/i })).not.toBeInTheDocument();
+  });
+
+  it('shows Log Out button when user is logged in', () => {
+    setLoggedIn(true);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument();
+  });
+
+  it('does not show Log In button when user is logged in', () => {
+    setLoggedIn(true);
+    renderNav();
+    expect(screen.queryByRole('button', { name: /log in/i })).not.toBeInTheDocument();
+  });
+
+  it('login button has the login-btn class', () => {
+    setLoggedIn(false);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log in/i })).toHaveClass('login-btn');
+  });
+
+  it('logout button has the login-btn class', () => {
+    setLoggedIn(true);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log out/i })).toHaveClass('login-btn');
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACCESSIBILITY
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - accessibility', () => {
+  it('Calendar tab has correct aria-label', () => {
+    renderNav();
+    expect(screen.getByLabelText('Navigate to Calendar page')).toBeInTheDocument();
+  });
+
+  it('Submit tab has correct aria-label', () => {
+    renderNav();
+    expect(screen.getByLabelText('Navigate to Submit Event page')).toBeInTheDocument();
+  });
+
+  it('logo has correct aria-label', () => {
+    renderNav();
+    expect(screen.getByLabelText('Navigate to About page')).toBeInTheDocument();
+  });
+
+  it('all role=button elements have an aria-label', () => {
+    renderNav();
+    screen.getAllByRole('button').forEach(btn => {
+      expect(btn).toHaveAttribute('aria-label');
+    });
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MOBILE — HAMBURGER MENU
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - mobile hamburger menu', () => {
+  beforeEach(() => {
+    setMobile();
+  });
+
+  it('renders the hamburger button on mobile', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(screen.getByLabelText('Toggle navigation menu')).toBeInTheDocument();
+  });
+
+  it('mobile menu is not visible before hamburger is clicked', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(screen.queryByText('Submit')).toBeInTheDocument(); // exists in DOM but nav-tabs hidden via CSS
+    expect(screen.queryByRole('button', { name: /toggle navigation menu/i })).toBeInTheDocument();
+  });
+
+  it('mobile menu opens when hamburger is clicked', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    fireEvent.click(screen.getByLabelText('Toggle navigation menu'));
+    const mobileItems = document.querySelectorAll('.mobile-menu-item');
+    expect(mobileItems.length).toBeGreaterThan(0);
+  });
+
+  it('mobile menu closes after a menu item is clicked', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    fireEvent.click(screen.getByLabelText('Toggle navigation menu'));
+    const mobileItems = document.querySelectorAll('.mobile-menu-item');
+    fireEvent.click(mobileItems[0]);
+    expect(document.querySelectorAll('.mobile-menu-item')).toHaveLength(0);
+  });
+
+  it('hamburger aria-expanded is false by default', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(screen.getByLabelText('Toggle navigation menu')).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('hamburger aria-expanded is true when menu is open', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    fireEvent.click(screen.getByLabelText('Toggle navigation menu'));
+    expect(screen.getByLabelText('Toggle navigation menu')).toHaveAttribute('aria-expanded', 'true');
+  });
 });

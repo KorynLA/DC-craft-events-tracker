@@ -20,8 +20,12 @@ import './style/navigationTabs.css';
 export default function NavigationTabs() {
   const navigate = useNavigate();
   const location = useLocation();
-   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+
+  let isLoggedIn = document.cookie
+    .split("; ")
+    .some(c => c === "logged_in=true");
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 640);
@@ -77,14 +81,8 @@ export default function NavigationTabs() {
   /**
    * Handles button click events by navigating to the login URL
    */
-  const handleButtonClick = () => {
+  const handleButtonLoginClick = () => {
     const loginUrl = process.env.REACT_APP_LOGIN_URL;
-
-    if (!loginUrl) {
-      alert("Login is temporarily unavailable. Please try again later.");
-      return;
-    }
-
     try {
       new URL(loginUrl);
       window.location.assign(loginUrl);
@@ -93,6 +91,17 @@ export default function NavigationTabs() {
       alert("Login service is misconfigured.");
     }
     window.location.href = process.env.REACT_APP_LOGIN_URL;
+    if (!loginUrl) {
+      alert("Login is temporarily unavailable. Please try again later.");
+      return;
+    }
+  };
+
+  /**
+   * Handles button click events by navigating to the login URL
+   */
+  const handleButtonLogoutClick = () => {
+    isLoggedIn = false;
   };
 
   return (
@@ -126,7 +135,7 @@ export default function NavigationTabs() {
         </div>
       </div>
       <div className="header-actions">
-        <button onClick={()=>handleButtonClick()} className="login-btn" aria-label="Log in">Log in</button>
+      {isLoggedIn ? <button aria-label="Log out" className="login-btn" onClick={handleButtonLogoutClick}>Log Out</button> : <button aria-label="Log in" className="login-btn" onClick={handleButtonLoginClick}>Log In</button>}
         {isMobile && (
           <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen}>
             <span className="hamburger-line" />

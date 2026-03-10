@@ -1,19 +1,27 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { MemoryRouter } from 'react-router';
 import NavigationTabs from '../navigationTabs';
 
-// Mock useNavigate so navigation doesn't throw in tests
+// ── Mocks ─────────────────────────────────────────────────────────────────────
+
 const mockNavigate = jest.fn();
 jest.mock('react-router', () => ({
   ...jest.requireActual('react-router'),
   useNavigate: () => mockNavigate,
 }));
 
-/**
- * Helper to render NavigationTabs inside a MemoryRouter.
- * @param {string} initialPath - The route to simulate (default: '/')
- */
+jest.mock('../style/navigationTabs.css', () => ({}));
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+const setLoggedIn = (value) => {
+  Object.defineProperty(document, 'cookie', {
+    writable: true,
+    value: value ? 'logged_in=true' : '',
+  });
+};
+
 const renderNav = (initialPath = '/') =>
   render(
     <MemoryRouter initialEntries={[initialPath]}>
@@ -21,48 +29,45 @@ const renderNav = (initialPath = '/') =>
     </MemoryRouter>
   );
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TAB COUNT TESTS
-// ─────────────────────────────────────────────────────────────────────────────
-describe('NavigationTabs - tab count', () => {
-  it('renders exactly 2 navigation tabs', () => {
-    renderNav();
-    const tabs = screen.getAllByRole('button', { name: /navigate to (calendar|submit event)/i });
-    expect(tabs).toHaveLength(2);
-  });
+const setDesktop = () =>
+  Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 1024 });
+const setMobile = () =>
+  Object.defineProperty(window, 'innerWidth', { writable: true, configurable: true, value: 375 });
 
-  it('renders exactly 4 interactive elements total (logo + login + 2 tabs)', () => {
-    renderNav();
-    const allButtons = screen.getAllByRole('button');
-    expect(allButtons).toHaveLength(4);
-  });
+beforeEach(() => {
+  mockNavigate.mockClear();
+  setDesktop();
+  setLoggedIn(false);
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TAB NAME TESTS
+// RENDERING
 // ─────────────────────────────────────────────────────────────────────────────
-describe('NavigationTabs - tab names', () => {
-  it('renders a "Calendar" tab', () => {
+describe('NavigationTabs - rendering', () => {
+  it('renders the logo text', () => {
+    renderNav();
+    expect(screen.getByText(/CreateDMV/i)).toBeInTheDocument();
+  });
+
+  it('renders the Calendar tab', () => {
     renderNav();
     expect(screen.getByText('Calendar')).toBeInTheDocument();
   });
 
-  it('renders a "Submit" tab', () => {
+  it('renders the Submit tab', () => {
     renderNav();
     expect(screen.getByText('Submit')).toBeInTheDocument();
   });
 
-  it('tab names match the expected set exactly', () => {
+  it('renders exactly 2 nav tabs', () => {
     renderNav();
-    const EXPECTED_TAB_NAMES = ['Calendar', 'Submit'];
     const tabs = screen.getAllByRole('button', { name: /navigate to (calendar|submit event)/i });
-    const actualNames = tabs.map((tab) => tab.textContent.trim());
-    expect(actualNames).toEqual(EXPECTED_TAB_NAMES);
+    expect(tabs).toHaveLength(2);
   });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ACTIVE TAB TESTS (route-driven)
+// ACTIVE TAB — ROUTE DRIVEN
 // ─────────────────────────────────────────────────────────────────────────────
 describe('NavigationTabs - active tab by route', () => {
   it('does not mark any nav tab active on the root path', () => {
@@ -73,43 +78,95 @@ describe('NavigationTabs - active tab by route', () => {
     expect(submitTab).not.toHaveClass('active');
   });
 
-  it('marks "Calendar" tab active on /calendar', () => {
+  it('marks Calendar tab active on /calendar', () => {
     renderNav('/calendar');
-    const calendarTab = screen.getByText('Calendar').closest('[role="button"]');
-    expect(calendarTab).toHaveClass('active');
+    expect(screen.getByText('Calendar').closest('[role="button"]')).toHaveClass('active');
   });
 
-  it('does not mark "Submit" tab active on /calendar', () => {
+  it('does not mark Submit tab active on /calendar', () => {
     renderNav('/calendar');
-    const submitTab = screen.getByText('Submit').closest('[role="button"]');
-    expect(submitTab).not.toHaveClass('active');
+    expect(screen.getByText('Submit').closest('[role="button"]')).not.toHaveClass('active');
   });
 
-  it('marks "Submit" tab active on /submit-event', () => {
+  it('marks Submit tab active on /submit-event', () => {
     renderNav('/submit-event');
-    const submitTab = screen.getByText('Submit').closest('[role="button"]');
-    expect(submitTab).toHaveClass('active');
+    expect(screen.getByText('Submit').closest('[role="button"]')).toHaveClass('active');
   });
 
-  it('does not mark "Calendar" tab active on /submit-event', () => {
+  it('does not mark Calendar tab active on /submit-event', () => {
     renderNav('/submit-event');
-    const calendarTab = screen.getByText('Calendar').closest('[role="button"]');
-    expect(calendarTab).not.toHaveClass('active');
+    expect(screen.getByText('Calendar').closest('[role="button"]')).not.toHaveClass('active');
   });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ARIA / ACCESSIBILITY TESTS
+// NAVIGATION — CLICK HANDLERS
 // ─────────────────────────────────────────────────────────────────────────────
-describe('NavigationTabs - accessibility', () => {
-  it('every tab has an aria-label', () => {
+describe('NavigationTabs - navigation on click', () => {
+  it('navigates to /calendar when Calendar tab is clicked', () => {
     renderNav();
-    const buttons = screen.getAllByRole('button');
-    buttons.forEach((btn) => {
-      expect(btn).toHaveAttribute('aria-label');
-    });
+    fireEvent.click(screen.getByText('Calendar'));
+    expect(mockNavigate).toHaveBeenCalledWith('/calendar');
   });
 
+  it('navigates to /submit-event when Submit tab is clicked', () => {
+    renderNav();
+    fireEvent.click(screen.getByText('Submit'));
+    expect(mockNavigate).toHaveBeenCalledWith('/submit-event');
+  });
+
+  it('navigates to / when logo is clicked', () => {
+    renderNav('/calendar');
+    fireEvent.click(screen.getByLabelText('Navigate to About page'));
+    expect(mockNavigate).toHaveBeenCalledWith('/');
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOGIN / LOGOUT TOGGLE
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - login/logout toggle', () => {
+  it('shows Log In button when user is not logged in', () => {
+    setLoggedIn(false);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
+  });
+
+  it('does not show Log Out button when user is not logged in', () => {
+    setLoggedIn(false);
+    renderNav();
+    expect(screen.queryByRole('button', { name: /log out/i })).not.toBeInTheDocument();
+  });
+
+  it('shows Log Out button when user is logged in', () => {
+    setLoggedIn(true);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log out/i })).toBeInTheDocument();
+  });
+
+  it('does not show Log In button when user is logged in', () => {
+    setLoggedIn(true);
+    renderNav();
+    expect(screen.queryByRole('button', { name: /log in/i })).not.toBeInTheDocument();
+  });
+
+  it('login button has the login-btn class', () => {
+    setLoggedIn(false);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log in/i })).toHaveClass('login-btn');
+  });
+
+  it('logout button has the login-btn class', () => {
+    setLoggedIn(true);
+    renderNav();
+    expect(screen.getByRole('button', { name: /log out/i })).toHaveClass('login-btn');
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACCESSIBILITY
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - accessibility', () => {
   it('Calendar tab has correct aria-label', () => {
     renderNav();
     expect(screen.getByLabelText('Navigate to Calendar page')).toBeInTheDocument();
@@ -119,36 +176,71 @@ describe('NavigationTabs - accessibility', () => {
     renderNav();
     expect(screen.getByLabelText('Navigate to Submit Event page')).toBeInTheDocument();
   });
+
+  it('logo has correct aria-label', () => {
+    renderNav();
+    expect(screen.getByLabelText('Navigate to About page')).toBeInTheDocument();
+  });
+
+  it('nav tabs and logo all have aria-labels', () => {
+    renderNav();
+    const labeled = [
+      'Navigate to About page',
+      'Navigate to Calendar page',
+      'Navigate to Submit Event page',
+    ];
+    labeled.forEach(label => {
+      expect(screen.getByLabelText(label)).toBeInTheDocument();
+    });
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LOGIN BUTTON TESTS
+// MOBILE — HAMBURGER MENU
 // ─────────────────────────────────────────────────────────────────────────────
-describe('Login button', () => {
-  test('renders the login button', () => {
-    renderNav();
-    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument();
+describe('NavigationTabs - mobile hamburger menu', () => {
+  beforeEach(() => {
+    setMobile();
   });
 
-  test('login button has correct text', () => {
+  it('renders the hamburger button on mobile', () => {
     renderNav();
-    expect(screen.getByRole('button', { name: /log in/i })).toHaveTextContent('Log in');
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(screen.getByLabelText('Toggle navigation menu')).toBeInTheDocument();
   });
 
-  test('login button is visible on desktop', () => {
+  it('mobile menu is not visible before hamburger is clicked', () => {
     renderNav();
-    const btn = screen.getByRole('button', { name: /log in/i });
-    expect(btn).toBeVisible();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(document.querySelectorAll('.mobile-menu-item')).toHaveLength(0);
   });
 
-  test('login button has correct aria-label', () => {
+  it('mobile menu opens when hamburger is clicked', () => {
     renderNav();
-    expect(screen.getByLabelText(/log in/i)).toBeInTheDocument();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    fireEvent.click(screen.getByLabelText('Toggle navigation menu'));
+    expect(document.querySelectorAll('.mobile-menu-item').length).toBeGreaterThan(0);
   });
 
-  test('login button has login-btn class', () => {
+  it('mobile menu closes after a menu item is clicked', () => {
     renderNav();
-    const btn = screen.getByRole('button', { name: /log in/i });
-    expect(btn).toHaveClass('login-btn');
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    fireEvent.click(screen.getByLabelText('Toggle navigation menu'));
+    const mobileItems = document.querySelectorAll('.mobile-menu-item');
+    fireEvent.click(mobileItems[0]);
+    expect(document.querySelectorAll('.mobile-menu-item')).toHaveLength(0);
+  });
+
+  it('hamburger aria-expanded is false by default', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    expect(screen.getByLabelText('Toggle navigation menu')).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('hamburger aria-expanded is true when menu is open', () => {
+    renderNav();
+    act(() => { window.dispatchEvent(new Event('resize')); });
+    fireEvent.click(screen.getByLabelText('Toggle navigation menu'));
+    expect(screen.getByLabelText('Toggle navigation menu')).toHaveAttribute('aria-expanded', 'true');
   });
 });

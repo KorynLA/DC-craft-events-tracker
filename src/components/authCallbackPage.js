@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./style/authCallbackPage.css";
 
 export default function AuthCallbackPage() {
- const [status, setStatus] = useState("loading"); // "loading" | "success" | "error"
+  const [status, setStatus] = useState("loading");
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -16,7 +16,7 @@ export default function AuthCallbackPage() {
       }
 
       try {
-        const response = await fetch("/api/auth/callback", {
+        const response = await fetch(process.env.REACT_APP_AUTH_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
