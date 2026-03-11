@@ -688,37 +688,37 @@ export default function EventSubmissionForm() {
             </p>
           </div>
           
-          {/* Form Submission Section */}
           <div className="button-container">
-            <button
-              onClick={handleSubmit}
-              className="submit-button"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Submitting...' : 'Submit'}
-            </button>
+            {isLoggedIn ? (
+              <button
+                onClick={handleSubmit}
+                className="submit-button"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </button>
+            ) : (
+              <div className="login-overlay">
+              <div className="login-overlay-card">
+              <div className="login-overlay-icon">🔒</div>
+              <div className="login-overlay-title">Login to Submit</div>
+              <div className="login-overlay-subtitle">You need an account to<br/>submit events</div>
+              <button
+                className="login-overlay-btn"
+                onClick={() => {
+                  const loginUrl = process.env.REACT_APP_LOGIN_URL;
+                  try { new URL(loginUrl); window.location.assign(loginUrl); }
+                  catch { alert("Login service is misconfigured."); }
+                }}
+                >
+                Log In
+              </button>
+              </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-      {!isLoggedIn && (
-        <div className="login-overlay">
-        <div className="login-overlay-card">
-        <div className="login-overlay-icon">🔒</div>
-        <div className="login-overlay-title">Login to Submit</div>
-        <div className="login-overlay-subtitle">You need an account to<br/>submit events</div>
-        <button
-          className="login-overlay-btn"
-          onClick={() => {
-            const loginUrl = process.env.REACT_APP_LOGIN_URL;
-            try { new URL(loginUrl); window.location.assign(loginUrl); }
-            catch { alert("Login service is misconfigured."); }
-          }}
-        >
-          Log In
-        </button>
-      </div>
-    </div>
-  )}
     </div>
   );
 }
