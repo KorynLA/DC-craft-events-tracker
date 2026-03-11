@@ -32,6 +32,8 @@ import './style/eventSubmissionForm.css';
  * @returns {JSX.Element} The rendered form component with validation and success feedback
  */
 export default function EventSubmissionForm() {
+  // 1. Add this line near your other state declarations:
+  const isLoggedIn = document.cookie.split("; ").some(c => c === "logged_in=true");
   // Form data state - holds all input field values
   const [formData, setFormData] = useState({
     name: '',
@@ -433,269 +435,290 @@ export default function EventSubmissionForm() {
           {apiError}
         </div>
       )}
-      
-      <div>
-        {/* Event Name Input Section - REQUIRED */}
-        <div className="form-section">
-          <label 
-            htmlFor="name" 
-            className="form-label"
-          >
-            Event Name <span className="required-indicator">*</span>
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            maxLength={140}
-            className="form-input"
-            placeholder="Enter event name (max 140 characters)"
-            disabled={isSubmitting}
-          />
-          {errors.name && (
-            <p className="error-message">{errors.name}</p>
-          )}
-          <p className="char-counter">
-            {formData.name.length}/140 characters
-          </p>
-        </div>
-
-        {/* Email Input Section - REQUIRED */}
-        <div className="form-section">
-          <label 
-            htmlFor="email" 
-            className="form-label"
-          >
-            Email <span className="required-indicator">*</span>
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            maxLength={100}
-            className="form-input"
-            placeholder="Enter your email address"
-            disabled={isSubmitting}
-          />
-          {errors.email && (
-            <p className="error-message">{errors.email}</p>
-          )}
-          <p className="char-counter">
-            {formData.email.length}/100 characters
-          </p>
-        </div>
-
-        {/* organization Name Input Section - REQUIRED */}
-        <div className="form-section">
-          <label 
-            htmlFor="organization" 
-            className="form-label"
-          >
-            Business Name <span className="required-indicator">*</span>
-          </label>
-          <input
-            type="text"
-            id="organization"
-            name="organization"
-            value={formData.organization}
-            onChange={handleChange}
-            maxLength={200}
-            className="form-input"
-            placeholder="Enter business name"
-            disabled={isSubmitting}
-          />
-          {errors.organization && (
-            <p className="error-message">{errors.organization}</p>
-          )}
-          <p className="char-counter">
-            {formData.organization.length}/200 characters
-          </p>
-        </div>
-
-        {/* Location Name Input Section - REQUIRED */}
-        <div className="form-section">
-          <label 
-            htmlFor="location" 
-            className="form-label"
-          >
-            Location Name <span className="required-indicator">*</span>
-          </label>
-          <input
-            type="text"
-            id="location"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-            maxLength={200}
-            className="form-input"
-            placeholder="Enter location name"
-            disabled={isSubmitting}
-          />
-          {errors.location && (
-            <p className="error-message">{errors.location}</p>
-          )}
-          <p className="char-counter">
-            {formData.location.length}/200 characters
-          </p>
-        </div>
-
-        {/* Event Link Input Section - REQUIRED */}
-        <div className="form-section">
-          <label 
-            htmlFor="link" 
-            className="form-label"
-          >
-            Event Link <span className="required-indicator">*</span>
-          </label>
-          <input
-            type="url"
-            id="link"
-            name="link"
-            value={formData.link}
-            onChange={handleChange}
-            className="form-input"
-            placeholder="https://example.com/event"
-            disabled={isSubmitting}
-          />
-          {errors.link && (
-            <p className="error-message">{errors.link}</p>
-          )}
-        </div>
-
-        {/* Date and Time Selection Section - REQUIRED */}
-        <div className="datetime-wrapper">
-          {/* Date Picker Integration */}
+      <div style={{ position: 'relative' }}>
+        <div>
+          {/* Event Name Input Section - REQUIRED */}
           <div className="form-section">
-            <label className="form-label">
-              Date <span className="required-indicator">*</span>
+            <label 
+              htmlFor="name" 
+              className="form-label"
+            >
+              Event Name <span className="required-indicator">*</span>
             </label>
-            <DatePicker 
-              selectedDate={formData.date} 
-              onDateChange={handleDateChange}
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              maxLength={140}
+              className="form-input"
+              placeholder="Enter event name (max 140 characters)"
               disabled={isSubmitting}
             />
-            {errors.date && (
-              <p className="error-message">{errors.date}</p>
+            {errors.name && (
+              <p className="error-message">{errors.name}</p>
+            )}
+            <p className="char-counter">
+              {formData.name.length}/140 characters
+            </p>
+          </div>
+
+          {/* Email Input Section - REQUIRED */}
+          <div className="form-section">
+            <label 
+              htmlFor="email" 
+              className="form-label"
+            >
+              Email <span className="required-indicator">*</span>
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              maxLength={100}
+              className="form-input"
+              placeholder="Enter your email address"
+              disabled={isSubmitting}
+            />
+            {errors.email && (
+              <p className="error-message">{errors.email}</p>
+            )}
+            <p className="char-counter">
+              {formData.email.length}/100 characters
+            </p>
+          </div>
+
+          {/* organization Name Input Section - REQUIRED */}
+          <div className="form-section">
+            <label 
+              htmlFor="organization" 
+              className="form-label"
+            >
+              Business Name <span className="required-indicator">*</span>
+            </label>
+            <input
+              type="text"
+              id="organization"
+              name="organization"
+              value={formData.organization}
+              onChange={handleChange}
+              maxLength={200}
+              className="form-input"
+              placeholder="Enter business name"
+              disabled={isSubmitting}
+            />
+            {errors.organization && (
+              <p className="error-message">{errors.organization}</p>
+            )}
+            <p className="char-counter">
+              {formData.organization.length}/200 characters
+            </p>
+          </div>
+
+          {/* Location Name Input Section - REQUIRED */}
+          <div className="form-section">
+            <label 
+              htmlFor="location" 
+              className="form-label"
+            >
+              Location Name <span className="required-indicator">*</span>
+            </label>
+            <input
+              type="text"
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              maxLength={200}
+              className="form-input"
+              placeholder="Enter location name"
+              disabled={isSubmitting}
+            />
+            {errors.location && (
+              <p className="error-message">{errors.location}</p>
+            )}
+            <p className="char-counter">
+              {formData.location.length}/200 characters
+            </p>
+          </div>
+
+          {/* Event Link Input Section - REQUIRED */}
+          <div className="form-section">
+            <label 
+              htmlFor="link" 
+              className="form-label"
+            >
+              Event Link <span className="required-indicator">*</span>
+            </label>
+            <input
+              type="url"
+              id="link"
+              name="link"
+              value={formData.link}
+              onChange={handleChange}
+              className="form-input"
+              placeholder="https://example.com/event"
+              disabled={isSubmitting}
+            />
+            {errors.link && (
+              <p className="error-message">{errors.link}</p>
             )}
           </div>
 
-          {/* Time Selector Integration */}
+          {/* Date and Time Selection Section - REQUIRED */}
+          <div className="datetime-wrapper">
+            {/* Date Picker Integration */}
+            <div className="form-section">
+              <label className="form-label">
+                Date <span className="required-indicator">*</span>
+              </label>
+              <DatePicker 
+                selectedDate={formData.date} 
+                onDateChange={handleDateChange}
+                disabled={isSubmitting}
+              />
+              {errors.date && (
+                <p className="error-message">{errors.date}</p>
+              )}
+            </div>
+
+            {/* Time Selector Integration */}
+            <div className="form-section">
+              <label className="form-label">
+                Time <span className="required-indicator">*</span>
+              </label>
+              <TimeSelector 
+                selectedTime={formData.time}
+                onTimeChange={handleTimeChange}
+                disabled={isSubmitting}
+              />
+              {errors.time && (
+                <p className="error-message">{errors.time}</p>
+              )}
+            </div>
+          </div>
+
+          {/* Price Input Section - OPTIONAL */}
           <div className="form-section">
-            <label className="form-label">
-              Time <span className="required-indicator">*</span>
+            <label 
+              htmlFor="price" 
+              className="form-label"
+            >
+              Price (Optional)
             </label>
-            <TimeSelector 
-              selectedTime={formData.time}
-              onTimeChange={handleTimeChange}
+            <input
+              type="text"
+              inputMode="decimal"
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              min="0"
+              step="0.01"
+              className="form-input"
+              placeholder="Enter price (e.g., 25.00)"
               disabled={isSubmitting}
             />
-            {errors.time && (
-              <p className="error-message">{errors.time}</p>
+            {errors.price && (
+              <p className="error-message">{errors.price}</p>
             )}
           </div>
-        </div>
 
-        {/* Price Input Section - OPTIONAL */}
-        <div className="form-section">
-          <label 
-            htmlFor="price" 
-            className="form-label"
-          >
-            Price (Optional)
-          </label>
-          <input
-            type="number"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            min="0"
-            step="0.01"
-            className="form-input"
-            placeholder="Enter price (e.g., 25.00)"
-            disabled={isSubmitting}
-          />
-          {errors.price && (
-            <p className="error-message">{errors.price}</p>
-          )}
-        </div>
-
-        {/* Kid-Friendly Section - OPTIONAL */}
-        <div className="form-section">
-          <label className="form-label">
-            Kid-Friendly (Optional)
-          </label>
-          <div className="kids-checkbox-group">
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                name="kids-yes"
-                checked={formData.kids === true}
-                onChange={() => handleKidsChange(true)}
-                disabled={isSubmitting}
-              />
-              <span className="checkmark"></span>
-              <span className="checkbox-text">Yes</span>
+          {/* Kid-Friendly Section - OPTIONAL */}
+          <div className="form-section">
+            <label className="form-label">
+              Kid-Friendly (Optional)
             </label>
-            <label className="checkbox-label">
-              <input
-                type="checkbox"
-                name="kids-no"
-                checked={formData.kids === false}
-                onChange={() => handleKidsChange(false)}
-                disabled={isSubmitting}
-              />
-              <span className="checkmark"></span>
-              <span className="checkbox-text">No</span>
-            </label>
+            <div className="kids-checkbox-group">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="kids-yes"
+                  checked={formData.kids === true}
+                  onChange={() => handleKidsChange(true)}
+                  disabled={isSubmitting}
+                />
+                <span className="checkmark"></span>
+                <span className="checkbox-text">Yes</span>
+              </label>
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  name="kids-no"
+                  checked={formData.kids === false}
+                  onChange={() => handleKidsChange(false)}
+                  disabled={isSubmitting}
+                />
+                <span className="checkmark"></span>
+                <span className="checkbox-text">No</span>
+              </label>
+            </div>
+            {errors.kids && (
+              <p className="error-message">{errors.kids}</p>
+            )}
           </div>
-          {errors.kids && (
-            <p className="error-message">{errors.kids}</p>
-          )}
-        </div>
 
-        {/* Event Description Input Section - OPTIONAL */}
-        <div className="form-section">
-          <label 
-            htmlFor="description" 
-            className="form-label"
-          >
-            Description (Optional)
-          </label>
-          <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            maxLength={500}
-            rows={4}
-            className="form-textarea"
-            placeholder="Briefly describe your event (max 500 characters)"
-            disabled={isSubmitting}
-          />
-          {errors.description && (
-            <p className="error-message">{errors.description}</p>
-          )}
-          <p className="char-counter">
-            {formData.description.length}/500 characters
-          </p>
-        </div>
-        
-        {/* Form Submission Section */}
-        <div className="button-container">
-          <button
-            onClick={handleSubmit}
-            className="submit-button"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit'}
-          </button>
+          {/* Event Description Input Section - OPTIONAL */}
+          <div className="form-section">
+            <label 
+              htmlFor="description" 
+              className="form-label"
+            >
+              Description (Optional)
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              maxLength={500}
+              rows={4}
+              className="form-textarea"
+              placeholder="Briefly describe your event (max 500 characters)"
+              disabled={isSubmitting}
+            />
+            {errors.description && (
+              <p className="error-message">{errors.description}</p>
+            )}
+            <p className="char-counter">
+              {formData.description.length}/500 characters
+            </p>
+          </div>
+          
+          {/* Form Submission Section */}
+          <div className="button-container">
+            <button
+              onClick={handleSubmit}
+              className="submit-button"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
+          </div>
         </div>
       </div>
+      {!isLoggedIn && (
+        <div className="login-overlay">
+        <div className="login-overlay-card">
+        <div className="login-overlay-icon">🔒</div>
+        <div className="login-overlay-title">Login to Submit</div>
+        <div className="login-overlay-subtitle">You need an account to<br/>submit events</div>
+        <button
+          className="login-overlay-btn"
+          onClick={() => {
+            const loginUrl = process.env.REACT_APP_LOGIN_URL;
+            try { new URL(loginUrl); window.location.assign(loginUrl); }
+            catch { alert("Login service is misconfigured."); }
+          }}
+        >
+          Log In
+        </button>
+      </div>
+    </div>
+  )}
     </div>
   );
 }
