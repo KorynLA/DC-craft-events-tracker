@@ -32,6 +32,7 @@ jest.mock('../timeSelector', () => ({ selectedTime, onTimeChange, disabled }) =>
 const setLoggedIn = () => {
   Object.defineProperty(document, 'cookie', {
     writable: true,
+    configurable: true,
     value: 'logged_in=true',
   });
 };
@@ -40,6 +41,7 @@ const setLoggedIn = () => {
 const setLoggedOut = () => {
   Object.defineProperty(document, 'cookie', {
     writable: true,
+    configurable: true,
     value: '',
   });
 };
@@ -80,6 +82,7 @@ describe('Login overlay', () => {
     setLoggedIn();
     render(<EventSubmissionForm />);
     expect(screen.queryByText('Login to Submit')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /^submit$/i })).toBeInTheDocument();
   });
 
   it('navigates to the login URL when the Log In button is clicked', () => {
@@ -540,19 +543,18 @@ describe('Input sanitization', () => {
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.time).toBe('10:00'); // 10:00 AM → 10:00
+    expect(body.time).toBe('10:00');
   });
 
   it('converts a 12-hour PM time to 24-hour format', async () => {
     const user = userEvent.setup();
     render(<EventSubmissionForm />);
     await fillRequiredFields(user);
-    // Override the time with a PM value
     fireEvent.change(screen.getByTestId('time-selector'), { target: { value: '2:00 PM' } });
     fireEvent.click(screen.getByRole('button', { name: /^submit$/i }));
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
     const body = JSON.parse(global.fetch.mock.calls[0][1].body);
-    expect(body.time).toBe('14:00'); // 2:00 PM → 14:00
+    expect(body.time).toBe('14:00');
   });
 });
