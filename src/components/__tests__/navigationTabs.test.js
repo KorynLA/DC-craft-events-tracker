@@ -244,3 +244,81 @@ describe('NavigationTabs - mobile hamburger menu', () => {
     expect(screen.getByLabelText('Toggle navigation menu')).toHaveAttribute('aria-expanded', 'true');
   });
 });
+// ─────────────────────────────────────────────────────────────────────────────
+// LOGOUT FUNCTIONALITY
+// ─────────────────────────────────────────────────────────────────────────────
+describe('NavigationTabs - logout functionality', () => {
+  beforeEach(() => {
+    process.env.REACT_APP_LOGOUT_URL = 'https://mock-logout-url.com'; // add this
+    setLoggedIn(true);
+    global.fetch = jest.fn(() => Promise.resolve({ ok: true }));
+    delete window.location;
+    window.location = { reload: jest.fn(), origin: 'https://localhost' };
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+it('calls fetch with credentials include on logout', async () => {
+  process.env.REACT_APP_LOGOUT_URL = 'https://mock-logout-url.com';
+  renderNav();
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: /log out/i }));
+  });
+  expect(global.fetch).toHaveBeenCalledWith(
+    'https://mock-logout-url.com',
+    expect.objectContaining({ credentials: 'include' })
+  );
+});
+
+it('calls fetch with the REACT_APP_LOGOUT_URL env variable', async () => {
+  process.env.REACT_APP_LOGOUT_URL = 'https://mock-logout-url.com';
+  renderNav();
+  await act(async () => {
+    fireEvent.click(screen.getByRole('button', { name: /log out/i }));
+  });
+  expect(global.fetch).toHaveBeenCalledWith(
+    'https://mock-logout-url.com',
+    expect.anything()
+  );
+});
+
+  it('clears the logged_in cookie on logout', async () => {
+    renderNav();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /log out/i }));
+    });
+    expect(document.cookie).not.toContain('logged_in=true');
+  });
+
+  it('calls window.location.reload after logout', async () => {
+    renderNav();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /log out/i }));
+    });
+    expect(window.location.reload).toHaveBeenCalled();
+  });
+
+  it('still clears cookie and reloads even if fetch throws', async () => {
+    global.fetch = jest.fn(() => Promise.reject(new Error('Network error')));
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+    renderNav();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /log out/i }));
+    });
+    expect(document.cookie).not.toContain('logged_in=true');
+    expect(window.location.reload).toHaveBeenCalled();
+  });
+
+  it('uses GET method for logout fetch', async () => {
+    renderNav();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /log out/i }));
+    });
+    expect(global.fetch).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ method: 'GET' })
+    );
+  });
+});

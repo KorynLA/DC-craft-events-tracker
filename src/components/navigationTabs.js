@@ -22,10 +22,9 @@ export default function NavigationTabs() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-
-  let isLoggedIn = document.cookie
-    .split("; ")
-    .some(c => c === "logged_in=true");
+  const [isLoggedIn, setLoggedIn] = useState(
+    document.cookie.split("; ").some(c => c === "logged_in=true")
+  );
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 640);
@@ -42,7 +41,6 @@ export default function NavigationTabs() {
    */
   const getActiveTab = () => {
     const path = location.pathname;
-    
     if (path.includes('/calendar')) {
       return 'calendar';
     } else if (path.includes('/submit-event')) {
@@ -100,8 +98,20 @@ export default function NavigationTabs() {
   /**
    * Handles button click events by navigating to the login URL
    */
-  const handleButtonLogoutClick = () => {
-    isLoggedIn = false;
+  const handleButtonLogoutClick = async () => {
+    try {
+      await fetch(process.env.REACT_APP_LOGOUT_URL, {
+        method: "GET",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout request failed", err);
+    }
+
+    document.cookie = "logged_in=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    setLoggedIn(false);
+    window.location.reload();
   };
 
   return (
