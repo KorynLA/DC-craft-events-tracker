@@ -54,7 +54,7 @@ export default function AuthCallbackPage() {
             <div className="callback-circle callback-circle--success">✓</div>
             <h2 className="callback-heading">Successfully Logged In</h2>
             <p className="callback-body">
-              Welcome back. Redirecting you to the calendar...
+              Welcome back!
             </p>
           </>
         )}
