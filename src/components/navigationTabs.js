@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import './style/navigationTabs.css';
 
@@ -20,6 +20,19 @@ import './style/navigationTabs.css';
 export default function NavigationTabs() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  let isLoggedIn = document.cookie
+    .split("; ")
+    .some(c => c === "logged_in=true");
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 640);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
   
   /**
    * Determines which tab should be active based on the current URL path.
@@ -52,6 +65,7 @@ export default function NavigationTabs() {
    */
   const handleTabClick = (tab) => {
     setActiveTab(tab);
+    setMobileMenuOpen(false);
     switch (tab) {
       case 'calendar':
         navigate('/calendar');
@@ -62,6 +76,32 @@ export default function NavigationTabs() {
       default:
         navigate('/');
     }
+  };
+
+  /**
+   * Handles button click events by navigating to the login URL
+   */
+  const handleButtonLoginClick = () => {
+    const loginUrl = process.env.REACT_APP_LOGIN_URL;
+    try {
+      new URL(loginUrl);
+      window.location.assign(loginUrl);
+    } catch (err) {
+      console.error("Invalid login URL", err);
+      alert("Login service is misconfigured.");
+    }
+    window.location.href = process.env.REACT_APP_LOGIN_URL;
+    if (!loginUrl) {
+      alert("Login is temporarily unavailable. Please try again later.");
+      return;
+    }
+  };
+
+  /**
+   * Handles button click events by navigating to the login URL
+   */
+  const handleButtonLogoutClick = () => {
+    isLoggedIn = false;
   };
 
   return (
@@ -94,6 +134,23 @@ export default function NavigationTabs() {
           Submit
         </div>
       </div>
+      <div className="header-actions">
+      {isLoggedIn ? <button aria-label="Log out" className="login-btn" onClick={handleButtonLogoutClick}>Log Out</button> : <button aria-label="Log in" className="login-btn" onClick={handleButtonLoginClick}>Log In</button>}
+        {isMobile && (
+          <button className="hamburger" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Toggle navigation menu" aria-expanded={mobileMenuOpen}>
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+          </button>
+        )}
+      </div>
+      {isMobile && mobileMenuOpen && (
+        <div className="mobile-menu">
+        {['calendar', 'submit-event'].map(tab => (
+          <div key={tab} className={`mobile-menu-item ${activeTab === tab ? 'active' : ''}`} onClick={() => handleTabClick(tab)} role="button" tabIndex={0}>
+            {tab === 'submit-event' ? 'Submit' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+          </div>))}
+        </div>
+      )}
     </div>
   );
 }
